@@ -1,0 +1,133 @@
+﻿@model GlobalCalendar.MVC.Models.UploadFile
+@{
+    ViewData["Title"] = "UploadFile";
+}
+<style>
+    .custom-file-upload-container {
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        text-align: center;
+        margin-top: 50px; /* Adjust as needed */
+    }
+
+    .custom-file-upload-label {
+        background-color: #3498db;
+        color: #ffffff;
+        padding: 15px 30px;
+        border-radius: 8px;
+        cursor: pointer;
+        display: inline-block;
+        font-size: 18px;
+        transition: background-color 0.3s ease;
+    }
+
+        .custom-file-upload-label:hover {
+            background-color: #2980b9;
+        }
+
+    #custom-multiplefileupload {
+        display: none;
+    }
+
+    .file-upload-info {
+        margin-top: 10px;
+        font-size: 14px;
+        color: #555;
+    }
+
+    /* New styles for enhanced design */
+    h3#title {
+        color: #3498db;
+        font-weight: bold;
+    }
+
+    .btn-upload {
+        background-color: #3498db;
+        color: #ffffff;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-upload:hover {
+            background-color: #2980b9;
+        }
+</style>
+<div>
+    <h3 style="text-align:center;" id="title">Upload Entity checklist</h3>
+</div>
+<section>
+    <div class="row justify-content-center">
+        <div class="col-12 ">
+            <div class="custom-file-upload-container">
+                <label for="custom-multiplefileupload" class="custom-file-upload-label">
+                    Select new/updated entity master file
+                </label>
+                <input id="custom-multiplefileupload" type="file" name="UploadExcel" class="file" data-show-upload="false" data-show-caption="true" accept=".xls, .xlsx" onchange="displayFileName()">
+                <div class="mt-1"><span class="text-danger" id="result"></span></div>
+                <div id="selected-file" class="file-upload-info"></div>
+                <div>
+                    <button class="btn btn-upload" onclick="uploadFile()">Upload File</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    function displayFileName() {
+        var input = document.getElementById('custom-multiplefileupload');
+        var output = document.getElementById('selected-file');
+        output.innerText = 'File Name: ' + input.files[0].name;
+    }
+    function uploadFile() {
+        var fileInput = document.getElementById('custom-multiplefileupload');
+        var file = fileInput.files[0];
+
+        if (file) {
+            if (isValidExcelFile(file.name)) {
+                var formData = new FormData();
+                formData.append('file', file);
+
+                var xhr = new XMLHttpRequest();
+
+                xhr.open('POST', '@Url.Action("UploadExcel","Admin")', true);
+
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200) {
+                            // The upload was successful
+                            var response = JSON.parse(xhr.responseText);
+                            document.getElementById('result').innerHTML = 'File uploaded successfully. Server response: ' + response.message;
+                        } else {
+                            // There was an error
+                            document.getElementById('result').innerHTML = 'Error uploading file. Status code: ' + xhr.status;
+                        }
+                    }
+                };
+
+                xhr.send(formData);
+            } else {
+                // Invalid file type
+                document.getElementById('result').innerHTML = 'Please select a valid Excel file.';
+            }
+        } else {
+            // No file selected
+            document.getElementById('result').innerHTML = 'Please select a file.';
+        }
+    }
+
+    // Function to check if the file has a valid Excel extension
+    function isValidExcelFile(filename) {
+        var validExtensions = ['.xls', '.xlsx'];
+        var extension = filename.substring(filename.lastIndexOf('.')).toLowerCase();
+        return validExtensions.includes(extension);
+    }
+
+
+</script>
+         

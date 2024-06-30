@@ -1,0 +1,6 @@
+﻿@{
+    // Assuming you have set the ViewBag.fileName in your controller action
+    ViewBag.fileName = "https://view.officeapps.live.com/op/embed.aspx?src=" + ViewBag.fileName;
+}
+
+<iframe src="@ViewBag.fileName" width="100%" height="600px"></iframe>

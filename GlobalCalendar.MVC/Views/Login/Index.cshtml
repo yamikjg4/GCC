@@ -1,0 +1,126 @@
+﻿@using System.Web.Optimization;
+@using Newtonsoft.Json;
+@model UserInfo;
+
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Login</title>        
+    <link rel="icon"  href="~/images/S_logo_png.png"/>
+    <link rel="stylesheet" href="~/assets/styles/style.min.css">
+
+    <!-- Waves Effect -->
+    <link rel="stylesheet" href="~/assets/plugin/waves/waves.min.css">
+
+</head>
+
+<body>
+
+    <div id="single-wrapper">
+        @*<form action="#" class="frm-single">*@
+        @using (Html.BeginForm("ValidateUser", "Login", FormMethod.Post, new { @class = "frm-single", @id = "form" }))
+        {
+            <div class="inside">
+                <div class="title"><strong>Global close calendar </strong></div>
+
+                <div class="frm-title">Login</div>
+                <div class="frm-input">
+                    @*<input type="text" placeholder="Domain Id" class="frm-inp">*@
+                    @Html.TextBoxFor(m => m.DomainID, null, new { placeholder = "Domain Id", @class = "frm-inp", autofocus = "autofocus", @autocomplete = "off", @required = "required" })
+                    <i class="fa fa-user frm-ico"></i>
+                </div>
+
+
+                <div class="frm-input">
+                    @*<input type="password" placeholder="Password" class="frm-inp">*@
+
+                    @Html.PasswordFor(m => m.Password, new { placeholder = "Password", @class = "frm-inp", autofocus = "autofocus", @required = "required" })
+                    <i class="fa fa-lock frm-ico"></i>
+                </div>
+
+                <button type="submit" class="frm-submit">Login<i class="fa fa-arrow-circle-right"></i></button>
+
+
+                <div class="frm-footer">Suzlon © 2024.</div>
+
+            </div>
+            <!-- .inside -->
+        }
+        @*</form>*@
+        <!-- /.frm-single -->
+    </div><!--/#single-wrapper -->
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="~/Content/assets/script/html5shiv.min.js"></script>
+        <script src="~/Content/assets/script/respond.min.js"></script>
+    <![endif]-->
+    <!--
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+@*    <script src="~/assets/scripts/jquery.min.js"></script>*@
+    <script src="~/assets/scripts/modernizr.min.js"></script>
+    <script src="~/assets/plugin/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/assets/plugin/nprogress/nprogress.js"></script>
+    <script src="~/assets/plugin/waves/waves.min.js"></script>
+
+    <script src="~/assets/scripts/main.min.js"></script>
+   
+
+<script src="~/toastr/toastr.js"></script>
+<link href="~/toastr/toastr.css" rel="stylesheet" />
+
+<script type="text/javascript">
+
+      $(document).ready(function () {
+          debugger;
+            var res = @Html.Raw(ViewBag.ResultMsg);
+
+            
+            if (res != null)
+            {
+                if (res.IsSuccess)
+                {
+                    toastr.success(res.Msg, "Technical Service Desk");
+                }
+                else if (res.IsWarn)
+                {
+                    toastr.warning(res.Msg, "Technical Service Desk");
+                }
+                else if (res.IsInfo)
+                {
+                    toastr.info(res.Msg, "Technical Service Desk");
+                }
+                else
+                {
+                    toastr.error(res.Msg, "Technical Service Desk");
+                }
+            }
+        });
+
+    $("#form").submit(function (e) {
+       debugger;
+
+      if ($("#DomainID").val() == "") {
+            toastr.warning("Please enter user name.", "Warning");
+            return false;
+        }
+
+        if ($("#Password").val() == "") {
+            toastr.warning("Please enter password.", "Warning");
+            return false;
+        }
+    });
+</script>
+</body>
+</html>
+

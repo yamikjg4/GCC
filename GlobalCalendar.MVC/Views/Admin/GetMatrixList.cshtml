@@ -1,0 +1,382 @@
+﻿@model IEnumerable<GlobalCalendar.MVC.DTO.MatreixModel>
+@{
+    ViewData["Title"] = "Update Matrix";
+}
+<style>
+
+    .card.card-light-blue {
+        background: #3165b8;
+        color: #ffffff;
+    }
+
+    .card {
+        border-radius: 20px !important;
+    }
+
+        .card .card-body {
+            padding: 10px 0.5rem !important;
+        }
+
+
+    .custom-model-main {
+        text-align: center;
+        overflow: hidden;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0; /* z-index: 1050; */
+        -webkit-overflow-scrolling: touch;
+        outline: 0;
+        opacity: 0;
+        -webkit-transition: opacity 0.15s linear, z-index 0.15;
+        -o-transition: opacity 0.15s linear, z-index 0.15;
+        transition: opacity 0.15s linear, z-index 0.15;
+        z-index: -1;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .model-open {
+        z-index: 99999;
+        opacity: 1;
+        overflow: hidden;
+    }
+
+    .custom-model-inner {
+        -webkit-transform: translate(0, -25%);
+        -ms-transform: translate(0, -25%);
+        transform: translate(0, -25%);
+        -webkit-transition: -webkit-transform 0.3s ease-out;
+        -o-transition: -o-transform 0.3s ease-out;
+        transition: -webkit-transform 0.3s ease-out;
+        -o-transition: transform 0.3s ease-out;
+        transition: transform 0.3s ease-out;
+        transition: transform 0.3s ease-out, -webkit-transform 0.3s ease-out;
+        display: inline-block;
+        vertical-align: middle;
+        width: 600px;
+        margin: 30px auto;
+        max-width: 97%;
+    }
+
+    .custom-model-wrap {
+        display: block;
+        width: 100%;
+        position: relative;
+        background-color: #fff;
+        border: 1px solid #999;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 6px;
+        -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+        background-clip: padding-box;
+        outline: 0;
+        text-align: left;
+        padding: 20px;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        max-height: calc(100vh - 70px);
+        overflow-y: auto;
+    }
+
+    .model-open .custom-model-inner {
+        -webkit-transform: translate(0, 0);
+        -ms-transform: translate(0, 0);
+        transform: translate(0, 0);
+        position: relative;
+        z-index: 999;
+    }
+
+    .model-open .bg-overlay {
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 99;
+    }
+
+    .bg-overlay {
+        background: rgba(0, 0, 0, 0);
+        height: 100vh;
+        width: 100%;
+        position: fixed;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 0;
+        -webkit-transition: background 0.15s linear;
+        -o-transition: background 0.15s linear;
+        transition: background 0.15s linear;
+    }
+
+    .close-btn {
+        position: absolute;
+        right: 0;
+        top: -30px;
+        cursor: pointer;
+        z-index: 99;
+        font-size: 30px;
+        color: #fff;
+    }
+
+    @@media screen and (min-width:800px) {
+        .custom-model-main:before {
+            content: "";
+            display: inline-block;
+            height: auto;
+            vertical-align: middle;
+            margin-right: -0px;
+            height: 100%;
+        }
+    }
+
+    @@media screen and (max-width:799px) {
+        .custom-model-inner {
+            margin-top: 45px;
+        }
+    }
+
+    .progress {
+        position: relative;
+        height: 160px;
+        width: 160px;
+        cursor: pointer;
+        top: 50%;
+        left: 31%;
+        border: none;
+        background: transparent;
+    }
+
+    .progress-circle {
+        transform: rotate(-90deg);
+        margin-top: -40px;
+    }
+
+    .progress-circle-back {
+        fill: none;
+        stroke: #D2D2D2;
+        stroke-width: 10px;
+    }
+
+    .progress-circle-prog {
+        fill: none;
+        stroke: orange;
+        stroke-width: 10px;
+        stroke-dasharray: 0 999;
+        stroke-dashoffset: 0px;
+        transition: stroke-dasharray 0.7s linear 0s;
+    }
+
+    .progress-text {
+        width: 100%;
+        position: absolute;
+        top: 60px;
+        text-align: center;
+        font-size: 2em;
+    }
+
+    .progress1 {
+        position: relative;
+        height: 160px;
+        width: 160px;
+        cursor: pointer;
+        top: 50%;
+        left: 31%;
+        border: none;
+        background: transparent;
+        /*  margin: -80px 0 0 -80px; */
+    }
+
+    .progress-circle1 {
+        transform: rotate(-90deg);
+        margin-top: -40px;
+    }
+
+    .progress-circle-back1 {
+        fill: none;
+        stroke: #D2D2D2;
+        stroke-width: 10px;
+    }
+
+    .progress-circle-prog1 {
+        fill: none;
+        stroke: green;
+        stroke-width: 10px;
+        stroke-dasharray: 0 999;
+        stroke-dashoffset: 0px;
+        transition: stroke-dasharray 0.7s linear 0s;
+    }
+
+    .progress-text1 {
+        width: 100%;
+        position: absolute;
+        top: 60px;
+        text-align: center;
+        font-size: 2em;
+    }
+
+    .progress2 {
+        position: relative;
+        height: 160px;
+        width: 160px;
+        cursor: pointer;
+        top: 50%;
+        left: 31%;
+        border: none;
+        background: transparent;
+        /*  margin: -80px 0 0 -80px; */
+    }
+
+    .progress-circle2 {
+        transform: rotate(-90deg);
+        margin-top: -40px;
+    }
+
+    .progress-circle-back2 {
+        fill: none;
+        stroke: #D2D2D2;
+        stroke-width: 10px;
+    }
+
+    .progress-circle-prog2 {
+        fill: none;
+        stroke: red;
+        stroke-width: 10px;
+        stroke-dasharray: 0 999;
+        stroke-dashoffset: 0px;
+        transition: stroke-dasharray 0.7s linear 0s;
+    }
+
+    .progress-text2 {
+        width: 100%;
+        position: absolute;
+        top: 60px;
+        text-align: center;
+        font-size: 2em;
+    }
+</style>
+<style>
+    input, button, a {
+    }
+</style>
+<div class="custom-model-main">
+    <div class="custom-model-inner">
+        <div class="close-btn" style="color:black;font-weight:bolder;">×</div>
+        <div class="custom-model-wrap">
+            <div class="pop-up-content-wrap">
+                <div id="partialViewContainer"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<div><h3 style="text-align:center;" id="title">Update Matrix </h3></div>
+<div class="table-responsive">
+<table class="table" id="example">
+    <thead>
+        <tr class="text-center">
+            <th style="width:4%;">
+             Task Id
+            </th>
+            <th>
+              Task Name
+            </th>
+            <th>
+                Task Description
+            </th>
+            <th>
+              Due Date For Submission
+            </th>
+            <th>
+                Due Date For Approval
+            </th>
+            <th>
+                Primary Owner
+            </th>
+            <th>
+                Secondary Owner
+            </th>
+            <th>
+                Primary Approver
+            </th>
+            <th>
+                Secondary Approver
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TaskId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TaskName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TaskDescription)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.Duedateforsubmission)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.Duedateforapproval)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrimaryOwnerName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SecondaryOwnerName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrimaryApproverName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SecondaryApproverName)
+            </td>
+            <td>
+                        <button type="button" style="background-color:#008080;" onclick="openpopup(@item.TaskId)"><i class="fa fa-edit" style="font-size:24px;color:white"></i></button>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</div>
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+<!-- DataTables JavaScript -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            autoFill: true,
+            paging: true,
+            search: true,
+            //pageLength: 5
+        });
+    });
+    $(".close-btn, .bg-overlay").click(function () {
+        $(".custom-model-main").removeClass('model-open');
+    });
+    var openPartialViewUrl = '@Url.Action("OpenPartialview", "Admin")';
+
+    function openpopup(Id) {
+        console.log(Id);
+        $.ajax({
+            url: openPartialViewUrl,
+            type: 'POST',
+            data: { TaskId:Id /* Pass the TaskId here */ },
+            success: function (data) {
+                $('#partialViewContainer').html(data);
+                $(".custom-model-main").addClass('model-open');
+            },
+            error: function () {
+                alert('Error occurred while loading the partial view.');
+            }
+        });
+       
+    }
+</script>

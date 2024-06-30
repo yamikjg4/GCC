@@ -1,0 +1,67 @@
+﻿@model GlobalCalendar.MVC.DTO.BroadcastDTo
+
+@{
+    ViewData["Title"] = "AddBroadcastMessage";
+}
+
+
+<div class="container">
+    <div class="row col-md-12">
+        <form asp-action="AddBroadcastMessage" onsubmit="return validateForm()" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Type" class="control-label">Group<span class="text-danger">*</span></label>
+                <select asp-for="Type" class="form-control" id="typeSelect">
+                    <option value="">Select Group</option>
+                    <option value=1>Task owners</option>
+                    <option value=2>Task approvers</option>
+                    <option value=3>all of them</option>
+                    <!-- Add more options as needed -->
+                </select>
+                <span id="spnGrpType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Upload Image</label>
+                <input type="file" asp-for="File" class="form-control" multiple />
+            </div>
+            <div class="form-group">
+                <label asp-for="Message" class="control-label">Message <span class="text-danger">*</span></label>
+                <textarea asp-for="Message" class="form-control" id="messageTextarea"></textarea>
+                <span id="spnMess" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Send Broadcasting" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+  
+</div>
+<script>
+    function validateForm() {
+        var isValid = true;
+
+        // Client-side validation for Type
+        var selectedType = document.getElementById('typeSelect').value;
+        if (selectedType === '') {
+            $('#spnGrpType').text('Please Select Group').show();
+            isValid = false;
+        } else {
+            $('#spnGrpType').hide();
+        }
+
+        // Client-side validation for Message
+        var messageText = document.getElementById('messageTextarea').value.trim();
+        if (messageText === '') {
+            $('#spnMess').text("Please Enter Message").show();
+            isValid = false;
+        } else {
+            $('#spnMess').hide();
+        }
+
+        return isValid;
+    }
+</script>
+

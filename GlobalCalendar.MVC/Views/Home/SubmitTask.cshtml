@@ -1,0 +1,573 @@
+﻿@model GlobalCalendar.MVC.DTO.TaskDetail
+
+@{
+    ViewData["Title"] = "SubmitTask";
+    
+}
+<style>
+    .mybtn {
+        border-radius: 3px;
+        text-decoration: none;
+        font-family: sans-serif;
+        font-size: 10px;
+        padding: 8px 15px;
+        background-color: #00ad25;
+        color: #fff;
+        transition-delay: .2s;
+        transition: .3s;
+        font-variant-caps: all-small-caps;
+        box-shadow: 4px 3px 11px 0 #00ad25;
+    }
+
+        .mybtn:hover {
+            background-color: #009420;
+            box-shadow: 4px 3px 11px 0 #005a13;
+        }
+            #csv-input {
+      display: none;
+    }
+        .input-group-btn:first-child>.btn, .input-group-btn:first-child>.btn-group {
+        top: 25%;
+        padding: 1px 5px;
+        margin-right: -1px;
+        height: 28px;
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <form asp-action="SubmitTask" id="myForm" enctype="multipart/form-data" >
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row col-12">
+                    <div class="col-md-6 col-12">
+                        <div class="form-group">
+                            <input type="hidden" asp-for="TaskDocId"/>
+                            <label asp-for="Id" class="control-label">Task No</label>
+                            <input asp-for="Id" class="form-control" disabled />
+                            <span asp-validation-for="Id" class="text-danger"></span>
+                        </div>
+                </div>
+                <div class="col-md-6 col-12">
+                        <div class="form-group">
+                            <label asp-for="TaskName" class="control-label">Task Name</label>
+                            <input asp-for="TaskName" class="form-control" disabled />
+                            <span asp-validation-for="TaskName" class="text-danger"></span>
+                        </div>
+                        </div>
+                </div>
+
+
+            <div class="form-group">
+                <label asp-for="TaskDescription" class="control-label">Task Description</label>
+                <input asp-for="TaskDescription" class="form-control" disabled />
+                <span asp-validation-for="TaskDescription" class="text-danger"></span>
+            </div>
+          @*  <div class="form-group">
+                <label asp-for="Period" class="control-label"></label>
+                <input asp-for="Period" class="form-control" disabled/>
+                <span asp-validation-for="Period" class="text-danger"></span>
+            </div>*@
+            <div class="row col-12">
+                @{
+                    string[] nameArray = Model.Period.Split(new string[] { " - " }, StringSplitOptions.None);
+                    string StartDate = nameArray[0];
+                    string EndDate = nameArray[1];
+                }
+                <div class="col-md-6 col-12">
+                    <div class="form-group">
+                     <label class="control-label">Start Date</label>
+                    <input class="form-control" disabled  value="@StartDate"/>
+                    </div>
+                </div>
+                  <div class="col-md-6 col-12">
+                    <div class="form-group">
+                     <label class="control-label">End Date</label>
+                    <input class="form-control" disabled value="@EndDate" />
+                    </div>
+                </div>
+            </div>
+            <div class="row col-12">
+                <div class="col-md-6 col-12">
+            <div class="form-group">
+                        <label asp-for="PrimaryOwner" class="control-label">Primary Owner</label>
+                <input asp-for="PrimaryOwner" class="form-control" disabled/>
+                <span asp-validation-for="PrimaryOwner" class="text-danger"></span>
+            </div>
+                </div>
+                <div class="col-md-6 col-12">
+            <div class="form-group">
+                 <label asp-for="SecondaryOwner" class="control-label">Secondary Owner</label>
+                <input asp-for="SecondaryOwner" class="form-control" disabled />
+                <span asp-validation-for="SecondaryOwner" class="text-danger"></span>
+            </div>
+            </div>
+            </div>
+            <div class="row col-12">
+                <div class="col-md-6 col-12">
+                <div class="form-group">
+                        <label asp-for="PrimaryApprover" class="control-label">Primary Approver</label>
+                <input asp-for="PrimaryApprover" class="form-control"  disabled/>
+                <span asp-validation-for="PrimaryApprover" class="text-danger"></span>
+            </div>
+                </div>
+                <div class="col-md-6 col-12">
+            <div class="form-group">
+                <label asp-for="SecondaryApprover" class="control-label">Secondary Approver</label>
+                <input asp-for="SecondaryApprover" class="form-control" disabled />
+                <span asp-validation-for="SecondaryApprover" class="text-danger"></span>
+            </div>
+            </div>
+            </div>
+
+        
+            @*<div class="form-group">
+                <label asp-for="UploadDoc" class="control-label">Document Upload</label>
+                <input asp-for="UploadDoc" class="form-control" />
+                @*<span asp-validation-for="UploadFile" class="text-danger"></span>*@
+            @*    <br />*@
+            <label for="basic-url">Document upload</label>
+            <div class="input-group">
+                <label class="input-group-btn" style="top:-8px !important;position: static !important;">
+                    <span class="btn btn-default" style="font-size: 12px;">
+                       @* Browse&hellip; *@
+                       <img src="~/Icon/file.png" />
+                        <input id="csv-input" type="file" style="display: none;" multiple />
+                    </span>
+                </label>
+                <input type="text" id="UploadFileName" class="form-control" readonly placeholder="Upload Document" />
+                <span class="input-group-btn" style=" position: static !important;">
+                    <button class="btn" type="button" id="btnsubmit" style="    padding: 1px 5px;
+    height: 28px;
+    z-index: 2;
+    margin-left: -1px; 
+background-color:orange !important;" onclick="uploadFile()">
+                        <i class="fa fa-upload" aria-hidden="true"></i>
+                    </button>
+                </span>
+               
+            </div>
+            <span id="spnval" class="text-danger"></span>
+          <div style="display:none;" id="divdatatable">
+                <table id="dataTable" class="table text-center">
+                    <thead>
+                        <tr>
+                            <th>SR NO</th>
+                            <th>File Name</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                </table>
+          </div>
+          <br />
+
+
+            <div class="form-group">
+                <label class="control-label">Comment<span class="text-danger">*</span></label>
+                <textarea asp-for="Comment" class="form-control" id="commentTextarea" style="resize: none;"></textarea>
+
+                <span id="spnComment" class="text-danger"></span>
+            </div>
+            <div style="display:none;" id="divdatatable1">
+                <table id="dataTable1" class="table text-center">
+                    <thead>
+                        <tr>
+                            <th>SR NO</th>
+                            <th>UserName</th>
+                            <th>Comment Date</th>
+                            <th>Comment</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <br />
+            @if (Model.Duedateforsubmission <= DateTime.Now)
+            {
+                <div class="form-group" id="check">
+                    <label asp-for="OverdueTask" class="control-label">Reason for overdue task<span class="text-danger">*</span></label>
+                    <select asp-for="OverdueTask" class="form-control">
+                        <option value="">Select Reason</option>
+                        @foreach (var reason in ViewBag.Reason)
+                        {
+                            <option value="@reason.Value">@reason.Text</option>
+                        }
+                </select>
+                <span id="spnoverduetask" class="text-danger"></span>
+                
+            </div>
+        }
+            <div class="form-group">
+                @if (!Model.IsSubmitTask)
+                {
+                    <input type="submit" value="Save"  name="btn" class="btn btn-default" />
+                    <input type="submit" value="submit"  name="btn" class="btn btn-default" />
+                }
+                else{
+                    <input type="submit" value="Save" name="btn" class="btn btn-default disabled" />
+                    <input type="submit" value="submit" name="btn" class="btn btn-default disabled" />
+                }
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@*<div>
+    <a asp-action="Index">Back to List</a>
+</div>*@
+
+@*@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}*@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
+
+<script>
+    var textarea = document.getElementById('commentTextarea');
+    textarea.addEventListener('input', function () {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+    });
+
+    $(function () {
+        // We can attach the `fileselect` event to all file inputs on the page
+        $(document).on("change", ":file", function () {
+            var input = $(this),
+                numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                label = input
+                    .val()
+                    .replace(/\\/g, "/")
+                    .replace(/.*\//, "");
+            input.trigger("fileselect", [numFiles, label]);
+        });
+
+        // We can watch for our custom `fileselect` event like this
+        $(document).ready(function () {
+            debugger;
+            var TaskId = @Model.dtId;
+            GetList(TaskId);
+            GetCommentList(TaskId);
+            $(":file").on("fileselect", function (event, numFiles, label) {
+                var input = $(this)
+                    .parents(".input-group")
+                    .find(":text"),
+                    log = numFiles > 1 ? numFiles + " files selected" : label;
+
+                if (input.length) {
+                    input.val(log);
+                } else {
+                    if (log) alert(log);
+                }
+            });
+        });
+    });
+
+    async function uploadFile() {
+        debugger;
+        var fileInput = $('#csv-input')[0];
+        if (fileInput.files.length > 0) {
+           var formData = new FormData();
+            var files = document.getElementById('csv-input').files;
+            for (var i = 0; i < files.length; i++) {
+                formData.append('files', files[i]);
+            }
+        }
+        else {
+            $('#spnval').text("Please Select File").show();
+            return false;
+        }
+
+        var queryString = "?param1=@Model.dtId";
+
+        $.ajax({
+            url: '@Url.Action("Upload", "Home")' + queryString,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                $('#UploadFileName').val('');
+                $('#divdatatable').show();
+                if ($.fn.DataTable.isDataTable('#dataTable')) {
+                    $('#dataTable').DataTable().destroy();
+                }
+                $('#dataTable').DataTable({
+                    data: response.data, // Assuming response has a property 'data' containing the array of objects
+                    columns: [
+                        {
+                            data: 'SR NO',
+                            render: function (data, type, row, meta) {
+                                // Use meta.row + 1 to generate an incrementing number starting from 1
+                                return meta.row + 1;
+                            }
+                        },
+                        { data: 'taskFileName' },
+                        {
+                            data: null,
+                            render: function (data, type, row) {
+                                debugger;
+                                console.log(data.taskDocumnet);
+                                 var downloadUrl = '@Url.Action("Download", "Home")' + '?fileName=' + data.taskDocumnet;
+                                // Construct the download link with the file name
+                                var rowHtml = ''; // Corrected variable name from 'row' to 'rowHtml'
+                                
+                               
+                                rowHtml += '<div><a href="' + downloadUrl + '"  class="btn" data-toggle="tooltip" data-placement="top" title="Download File" style="padding:1px 14px !important;margin-right:5px;"><i class="fa fa-download" aria-hidden="true"></i></a>';
+                                
+                                rowHtml += '<button onclick="confirmDelete(\'' + data.uploadId + '\')" class="btn" style="background-color:red;color:white;padding:1px 14px !important;" data-toggle="tooltip" data-placement="top" title="Delete This File"><i class="fa fa-trash-o"></i></button></div>';
+                                return rowHtml; // Return the HTML string
+                            }
+                        }
+                    ],
+                    searching: false, // Disable searching
+                    lengthChange: false, // Disable page length change
+                    pageLength: 4
+                });
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+
+    function confirmDelete(srNo) {
+        if (confirm("Are you sure you want to delete Record?")) {
+            var dtId = '@Model.dtId'; // Replace with correct way of fetching dtId
+            var queryString = "?param1=" + srNo + "&param2=" + dtId;
+
+            $.ajax({
+                url: '@Url.Action("DeleteDoc", "Home")' + queryString,
+                type: 'POST',
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response && response.data !== undefined && response.data !== null && response.data !== "") {
+                        $('#divdatatable').show();
+                        if ($.fn.DataTable.isDataTable('#dataTable')) {
+                            $('#dataTable').DataTable().destroy();
+                        }
+                        $('#dataTable').DataTable({
+                            data: response.data,
+                            columns: [
+                                {
+                                    data: 'SR NO',
+                                    render: function (data, type, row, meta) {
+                                        return meta.row + 1;
+                                    }
+                                },
+                                { data: 'taskFileName' },
+                                {
+                                    data: null,
+                                    render: function (data, type, row) {
+                                        var downloadUrl = '@Url.Action("Download", "Home")' + '?fileName=' + data.taskDocumnet;
+                                        var rowHtml = '';
+                                       
+                                            rowHtml += '<div><a href="' + downloadUrl + '"  class="btn" data-toggle="tooltip" data-placement="top" title="Download File" style="padding:1px 14px !important;margin-right:5px;"><i class="fa fa-download" aria-hidden="true"></i></a>';
+                                        
+                                        rowHtml += '<button onclick="confirmDelete(' + data.uploadId + ')" class="btn" style="background-color:red;color:white;padding:1px 14px !important;" data-toggle="tooltip" data-placement="top" title="Delete This File"><i class="fa fa-trash-o"></i></button></div>';
+                                        return rowHtml;
+                                    }
+                                }
+                            ],
+                            searching: false,
+                            lengthChange: false,
+                            pageLength: 4
+                        });
+                    } else {
+                        $('#divdatatable').hide();
+                         alert("No data received from the server.");
+                    }
+                },
+                error: function (error) {
+                    console.log("AJAX request failed:", error);
+                    alert("Error occurred during AJAX request. Please check console for details.");
+                }
+            });
+        }
+    }
+
+    function GetList(TaskId) {
+        debugger;
+        var queryString = "?id=" + TaskId; // Concatenate TaskId correctly
+        $.ajax({
+            url: '@Url.Action("GetDocumentDetailByTask", "Home")' + queryString,
+            type: 'POST',
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.data.length > 0) { // Check if response data is not empty
+                    $('#divdatatable').show();
+                    if ($.fn.DataTable.isDataTable('#dataTable')) {
+                        $('#dataTable').DataTable().destroy();
+                    }
+                    console.log(response.data);
+                    $('#dataTable').DataTable({
+                        data: response.data, // Assuming response has a property 'data' containing the array of objects
+                        columns: [
+                            {
+                                data: 'SR NO',
+                                render: function (data, type, row, meta) {
+                                    // Use meta.row + 1 to generate an incrementing number starting from 1
+                                    return meta.row + 1;
+                                }
+                            },
+                            { data: 'taskFileName' },
+                            {
+                                data: null,
+                                render: function (data, type, row) {
+                                    debugger;
+                                    console.log(data.taskDocumnet);
+
+                                    var downloadUrl = '@Url.Action("Download", "Home")' + '?fileName=' + data.taskDocumnet;
+                                     
+                                    // Construct the download link with the file name
+                                    var rowHtml = ''; // Corrected variable name from 'row' to 'rowHtml'
+                                    
+                                        rowHtml += '<div><a href="' + downloadUrl + '"  class="btn" data-toggle="tooltip" data-placement="top" title="Download File" style="padding:1px 14px !important;margin-right:5px;"><i class="fa fa-download" aria-hidden="true"></i></a>';
+                                    
+                                    rowHtml += '<button onclick="confirmDelete(\'' + data.uploadId + '\')" class="btn" style="background-color:red;color:white;padding:1px 14px !important;" data-toggle="tooltip" data-placement="top" title="Delete This File"><i class="fa fa-trash-o"></i></button></div>';
+                                    return rowHtml; // Return the HTML string
+                                }
+                            }
+                        ],
+                        searching: false, // Disable searching
+                        lengthChange: false, // Disable page length change
+                        pageLength: 4
+                    });
+                } else {
+                    $('#divdatatable').hide(); // Hide the datatable if response data is empty
+                }
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+
+    function GetCommentList(TaskId) {
+        debugger;
+        var queryString = "?id=" + TaskId; // Concatenate TaskId correctly
+        $.ajax({
+            url: '@Url.Action("GetAllComment", "Home")' + queryString,
+            type: 'POST',
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.data.length > 0) { // Check if response data is not empty
+                    $('#divdatatable1').show();
+                    if ($.fn.DataTable.isDataTable('#dataTable1')) {
+                        $('#dataTable').DataTable().destroy();
+                    }
+                    $('#dataTable1').DataTable({
+                        data: response.data, // Assuming response has a property 'data' containing the array of objects
+                        columns: [
+                            {
+                                data: 'SR NO',
+                                render: function (data, type, row, meta) {
+                                    // Use meta.row + 1 to generate an incrementing number starting from 1
+                                    return meta.row + 1;
+                                }
+                            },
+                            { data: 'userName' },
+                            { data: 'commentDate' },
+                            { data: 'comment' },
+                        ],
+                        searching: false, // Disable searching
+                        lengthChange: false, // Disable page length change
+                        pageLength: 4
+                    });
+                } else {
+                    $('#divdatatable1').hide(); // Hide the datatable if response data is empty
+                }
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+
+    async function validateForm() {
+        debugger;
+        var isVisible = $('#check').is(':visible');
+        var textarea = $('#commentTextarea').val();
+        if (isVisible) {
+            var value = $('#OverdueTask').val();
+            if (value == null || value == '' || isNaN(value)) {
+                $('#spnoverduetask').text('Please Select Overdue Task').show();
+                return false;
+            }
+
+        }
+        if(textarea ==""){
+            $('#spnComment').text("Please Enter Your Comment").show();
+            return false;
+        }
+        return true;
+    }
+
+    async function handleSubmit() {
+        debugger;
+        var isValid = await validateForm();
+        if (isValid) {
+            debugger;
+            // Validation passed, show confirmation dialog
+            Swal.fire({
+                title: '',
+                text: "Are you sure you want to submit?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // User confirmed, perform form submission action
+                    document.getElementById("myForm").submit();
+                    // Move action method here
+                }
+                else {
+                    return false;
+                }
+            });
+        }
+    }
+
+    $(document).ready(function () {
+        $('#myForm').submit(async function (event) {
+            debugger;
+            event.preventDefault(); // Prevent the default form submission
+
+            // Get the value of the clicked button
+            var clickedButtonValue = $(document.activeElement).val();
+
+            // Check which button was clicked
+            if (clickedButtonValue === 'Save') {
+                var isValid = await validateForm();
+                if (isValid) {
+                    var hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = 'btn';
+                    hiddenInput.value = clickedButtonValue;
+                    this.appendChild(hiddenInput);
+                    document.getElementById("myForm").submit();
+                }
+                // Call a function or perform actions specific to the Save button
+            } else if (clickedButtonValue === 'submit') {
+                var hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'btn';
+                hiddenInput.value = clickedButtonValue;
+                this.appendChild(hiddenInput);
+                await handleSubmit();
+                // Call a function or perform actions specific to the Submit button
+            } else {
+                console.log('Unknown button clicked');
+                // Handle unexpected cases
+            }
+
+            // You can perform additional actions based on which button was clicked
+            // For example, you can submit the form, perform validation, etc.
+        });
+    });
+
+    
+
+</script>

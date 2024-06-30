@@ -1,0 +1,349 @@
+﻿<style>
+        #outer
+    {
+        width:100%;
+        text-align: center;
+    }
+    .inner
+    {
+        display: inline-block;
+    }
+
+    #tbl2 td:first-child{
+        text-align: left;
+    }
+
+    .dt-left {
+        text-align: left;
+    }
+</style>
+<div><h3 style="text-align:center;" id="title">Task Status report </h3></div>
+<div class="container">
+    <div class="row" style="margin-bottom:10px !important;">
+        <div class="col-12" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+            
+            <div class="form-group col-4">
+                <label for="exampleInputEmail1">Year<span class="text-danger"> * </span></label>
+                @Html.DropDownList("Year", ViewBag.YearMaster, "-- Select Year --", new { @class = "form-control" })
+                <span id="emailHelp" class="form-text text-danger" style="display:none;"></span>
+            </div>
+            <div class="form-group col-4">
+                <label for="exampleInputEmail1">Month</label>
+                @Html.DropDownList("Month", ViewBag.Months, "-- Select Month --", new { @class = "form-control" })
+                @*  <span id="emailHelp" class="form-text text-danger" style="display:none;"></span>*@
+            </div>
+            <div class="form-group col-4">
+                <label for="exampleInputEmail1">Company<span class="text-danger"> * </span></label>
+                @Html.DropDownList("Company", ViewBag.Company, "-- Select Company --", new { @class = "form-control" })
+                <span id="companyhelp" class="form-text text-danger" style="display:none;"></span>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Report Type<span class="text-danger"> * </span></label>
+                <select id="rept" class="form-control">
+                    <option value="">Select Report</option>
+                    <option value="1">Company code wise</option>
+                    <option value="2">Task owner wise</option>
+                    <option value="3">Task approver wise</option>
+                </select>
+                <span id="report" class="form-text text-danger" style="display:none;"></span>
+            </div>
+
+           @* <div id="btn-group">
+              
+                    <button type="button" onclick="filterdata()" class="btn btn-primary">Search</button></div>
+            
+                    <button type="button" onclick="downloadFile()" class="btn btn-secondary">Export To Excel</button>
+                    
+            </div>*@
+     
+
+           
+        </div>
+    </div>
+    <div class="row">
+    <div class="col-12 col-sm-12 col-md-12 col-xl-12" >
+            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups" style="float:right !important;">
+            <div class="btn-group" id="btn-group" role="group">
+                <button type="button" onclick="filterdata()" class="btn btn-primary"><i class="fa fa-search"></i> Search</button>
+            </div>
+            <div class="btn-group" role="group">
+                <button type="button" onclick="downloadFile()" class="btn" style="background-color:green;color:white;"><i class="fa fa-file-excel-o"></i></button>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div id="dCompany" style="display:none;margin-top:3px !important;">
+        
+        <table id="tbl" class="table">
+            <caption>Task Company Summary</caption>
+            <thead>
+                <tr style="background-color:gray;">
+                    <th>
+                        Company code/
+                        Company name
+                    </th>
+                    <th>
+                        Total tasks
+                    </th>
+                    <th>
+                        Total task complete
+                    </th>
+                    <th>Total tasks pending not due</th>
+                    <th>Total tasks pending overdue</th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+
+            </tbody>
+        </table>
+    </div>
+    <div id="owner" style="display:none;">
+        <table class="table" id="tbl1">
+            <caption>Task Owner Summary</caption>
+            <thead>
+                <tr style="background-color: gray;">
+                    <th>Task Owner Name</th>
+                    <th>Company</th>
+                    <th>Total Tasks</th>
+                    <th>Total Tasks Completed</th>
+                    <th>Total Tasks Pending Not Due</th>
+                    <th>Total Tasks Pending Overdue</th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+            </tbody>
+        </table>
+    </div>
+    <div id="Approver" style="display:none;">
+        <table class="table" id="tbl2">
+            <caption>Task Approver Summary</caption>
+            <thead>
+                <tr style="background-color: gray;">
+                    <th>Task Approver Name</th>
+                    <th>Company</th>
+                    <th>Total Tasks</th>
+                    <th>Total Tasks Completed</th>
+                    <th>Total Tasks Pending Not Due</th>
+                    <th>Total Tasks Pending Overdue</th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+            </tbody>
+        </table>
+    </div>
+
+</div>
+<script>
+    function filterdata() {
+        var year = $('#Year').val();
+        var company = $('#Company').val();
+        var rept = $('#rept').val();
+        var Month = $('#Month').val();
+        var errorlog = 0;
+
+        if (year == '' || year == 0 || isNaN(year)) {
+            errorlog++;
+            $('#emailHelp').text("Please Select Year").show();
+        }
+        if (company == '' || company == 0 || isNaN(company)) {
+            errorlog++;
+            $('#companyhelp').text('Please Select Company').show();
+        }
+        if (rept == '' || rept == 0 || isNaN(rept)) {
+            $('#report').text('Please Select Report Type').show();
+            errorlog++;
+        }
+        if (errorlog != 0) {
+            return false;
+        } else {
+            $('#emailHelp').hide();
+            $('#companyhelp').hide();
+            $('#report').hide();
+            var dataObject = {
+                Month: Month,
+                Year: year,
+                company: company,
+                rept: rept
+            };
+            $.ajax({
+                url: '@Url.Action("CreateReport","AdminReport")',
+                type: 'POST',
+                async: false,
+                data: dataObject,
+                success: function (response) {
+                    console.log(response);
+                    // Handle success
+                    debugger;
+                    if (response.reptname === "CompanyWiseRept") {
+                        $('#dCompany').css('display', 'block');
+                        $('#owner').css('display', 'none');
+                        $('#Approver').css('display', 'none');
+                        destroyDataTables(); // Destroy existing DataTables
+                        $('#tbl').DataTable({
+                            data: response.data,
+                            columns: [
+                                { data: 'companyname', className:'dt-left' },
+                                { data: 'totalTask' },
+                                { data: 'totalTaskCompleted' },
+                                { data: 'totalTaskPendingNotdue' },
+                                { data: 'totalTaskPendingOverdue' },
+                            ],
+                            //"columnDefs": [{
+                            //    "targets": [0, 1], // This specifies the indexes of the columns 'companyname' and 'totalTask'
+                            //    "render": function (data, type, row, meta) {
+                            //        if (type === 'display') {
+                            //            console.log(data);
+                            //            // Replace 'YourPageURL' with the actual URL you want to redirect to
+                            //            return '<a href="YourPageURL" onclick="window.open(this.href); return false;">' + data + '</a>';
+                            //        } else {
+                            //            return data;
+                            //        }
+                            //    }
+                            //}]
+                        });
+                    }
+                    else if (response.reptname === "OwnerWiseRept") {
+                        $('#dCompany').css('display', 'none');
+                        $('#owner').css('display', 'block');
+                        $('#Approver').css('display', 'none');
+                        destroyDataTables(); // Destroy existing DataTables
+                        $('#tbl1').DataTable({
+                           
+                            data: response.data,
+                            columns: [
+                                { data: 'employeeName', className: 'employee-link dt-left' },
+                                { data: 'companyName', className: 'dt-left' },
+                                { data: 'totalTask' },
+                                { data: 'isApprove' },
+                                { data: 'totalTaskPendingNotDue' },
+                                { data: 'totalTaskPendingOverDue' }
+                            ],
+                            columnDefs: [
+                                { targets: 0, className: 'dt-left' ,
+                                    render: function (data, type, row) {
+
+                                        var url = '@Url.Action("OwnerReportDetail", "AdminReport")' + '?' + 'employee=' + encodeURIComponent(row.employeeName) + '&year=' + year + '&company=' + encodeURIComponent(row.companyName) + '&Month=' + Month;
+                                        return '<a href="' + url + '" class="employee-link">' + row.employeeName + '</a>';
+
+                                    }
+                                } // Targeting the first column (index 0) and applying the class 'dt-left' for left alignment
+                            ]
+                        });
+                    }
+                    else if (response.reptname === "ApproverWiseRept") {
+                        $('#dCompany').css('display', 'none');
+                        $('#owner').css('display', 'none');
+                        $('#Approver').css('display', 'block');
+                        destroyDataTables(); // Destroy existing DataTables
+                        $('#tbl2').DataTable({
+                          
+                            data: response.data,
+                            columns: [
+                                { data: 'employeeName', className: 'dt-left' },
+                                { data: 'companyName'  ,className: 'dt-left' },
+                                { data: 'totalTask' },
+                                { data: 'isApprove' },
+                                { data: 'totalTaskPendingNotDue' },
+                                { data: 'totalTaskPendingOverDue' }
+                            ],
+                            columnDefs: [
+                                { targets: 0, className: 'dt-left' ,
+                                    render: function (data, type, row) {
+
+                                        var url = '@Url.Action("ApproverReportDetail", "AdminReport")' + '?' + 'employee=' + encodeURIComponent(row.employeeName) + '&year=' + year + '&company=' + encodeURIComponent(row.companyName) + '&Month=' + Month;
+                                        return '<a href="' + url + '" class="employee-link">' + row.employeeName + '</a>';
+
+                                    }
+                                } // Targeting the first column (index 0) and applying the class 'dt-left' for left alignment
+                            ]
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Handle error
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+    }
+
+    function downloadFile() {
+        var year = $('#Year').val();
+        var company = $('#Company').val();
+        var rept = $('#rept').val();
+        var Month = $('#Month').val();
+        var errorlog = 0;
+
+        if (year == '' || year == 0 || isNaN(year)) {
+            errorlog++;
+            $('#emailHelp').text("Please Select Year").show();
+        }
+        if (company == '' || company == 0 || isNaN(company)) {
+            errorlog++;
+            $('#companyhelp').text('Please Select Company').show();
+        }
+        if (rept == '' || rept == 0 || isNaN(rept)) {
+            $('#report').text('Please Select Report Type').show();
+            errorlog++;
+        }
+        if (errorlog != 0) {
+            return false;
+        } else {
+            $('#emailHelp').hide();
+            $('#companyhelp').hide();
+            $('#report').hide();
+            var dataObject = {
+                Month: Month,
+                Year: year,
+                company: company,
+                rept: rept
+            };
+            $.ajax({
+                url: '@Url.Action("ExportToExcel", "AdminReport")',
+                type: 'POST',
+                data: dataObject,
+                xhrFields: {
+                    responseType: 'blob'
+                }
+            }).done(function (response) {
+                var blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                var url = window.URL.createObjectURL(blob);
+                var link = document.createElement('a');
+                link.href = url;
+                link.download = 'TaskStatus.xlsx';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url); // Clean up
+            }).fail(function (xhr, status, error) {
+                console.error(xhr.responseText);
+            });
+        }
+    }
+
+
+
+    // Function to destroy existing DataTables
+    function destroyDataTables() {
+        if ($.fn.DataTable.isDataTable('#tbl')) {
+            $('#tbl').DataTable().destroy();
+        }
+        if ($.fn.DataTable.isDataTable('#tbl1')) {
+            $('#tbl1').DataTable().destroy();
+        }
+        if ($.fn.DataTable.isDataTable('#tbl2')) {
+            $('#tbl2').DataTable().destroy();
+        }
+    }
+    $('#tbl tbody').on('click', 'a.employee-link', function (e) {
+        debugger;
+        e.preventDefault(); // Prevent default link behavior
+        var employeeName = $(this).text(); // Get the text of the clicked link
+        var year = $('#Year').val();
+        var company = $('#Company').val();
+        //var rept = $('#rept').val();
+        var Month = $('#Month').val();
+        // Redirect to a new page passing the employeeName as a parameter
+        window.location.href = '/AdminReport/OwnerReportDetail?employee=' + encodeURIComponent(employeeName) + '&year=' + year + '&company=' + company + '&Month=' + Month;
+    });
+</script>

@@ -1,0 +1,56 @@
+﻿<div class="main-menu">
+    <header class="header">
+        <a href="@Url.Action("Index","Home")" class="logo"><img src="~/images/Suzlon Logo-white.png" width="60%" /></a>
+        <button type="button" class="button-close fa fa-times js__menu_close"></button>
+        <style>
+            .ta-ownertask::before{
+                content: url('@Url.Content("~/Icon/OwnerTask.png")');
+            }  .ta-Apprvetask::before{
+                content: url('@Url.Content("~/Icon/ApproveTaskList.png")');
+            }
+
+            .ta-Apprvedtask::before {
+                content: url('@Url.Content("~/Icon/ApprovedTaskList.png")');
+            }
+        </style>
+    </header>
+    <!-- /.header -->
+    <div class="content">
+
+        <div class="navigation">
+            @*<h5 class="title">Navigation</h5>*@
+            <!-- /.title -->
+            <ul class="menu js__accordion">
+                <li id="dashboard" class="menu_active current">
+                    <a class="waves-effect" href="@Url.Action("Index","Home")"><i class="menu-icon ti-dashboard"></i><span>Dashboard</span></a>
+                </li>
+
+                <li id="create" class="menu_active">
+  @*                  <a class="waves-effect" href="@Url.Action("CreateRequest","Home")"><i class="menu-icon ti-plus"></i><span>Create New Request</span></a>*@
+                    <a class="waves-effect" href="@Url.Action("ListOfPage","Home")"><i class="menu-icon ta-ownertask"></i><span>Owner Task</span></a>
+                </li>
+                <li id="create" class="menu_active">
+                    @*                  <a class="waves-effect" href="@Url.Action("CreateRequest","Home")"><i class="menu-icon ti-plus"></i><span>Create New Request</span></a>*@
+                    <a class="waves-effect" href="@Url.Action("ApproveTaskList","Home")"><i class="menu-icon ta-Apprvetask"></i><span>Approve Task List</span></a>
+                </li>
+                <li id="create" class="menu_active">
+                    @*                  <a class="waves-effect" href="@Url.Action("CreateRequest","Home")"><i class="menu-icon ti-plus"></i><span>Create New Request</span></a>*@
+                    <a class="waves-effect" href="@Url.Action("GetApprovedTaskList","Home")"><i class="menu-icon ta-Apprvedtask"></i><span>Approved Task List</span></a>
+                </li>
+                <li id="logOut" class="menu-active">
+                    <a class="waves-effect" href="@Url.Action("LogOut","Login")"><i class="menu-icon fa fa-sign-out"></i><span>Log Out</span></a>
+                </li>
+            </ul>
+
+        </div>
+        <!-- /.navigation -->
+    </div>
+    <!-- /.content -->
+</div>
+<!-- /.main-menu -->
+<script>
+    $(document).ready(function () {
+
+    });
+
+</script>

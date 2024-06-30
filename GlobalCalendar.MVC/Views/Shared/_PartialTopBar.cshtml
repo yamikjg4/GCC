@@ -1,0 +1,147 @@
+﻿@using System.Web.Optimization;
+@using GlobalCalendar.MVC.SessionManagement
+@{    
+    UserInfo _userInfo = Context.Session.GetObject<UserInfo>("__UserInfo");
+}
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+    .ico-item {
+        display: inline-block;
+        position: relative;
+        margin-right: 10px; /* Adjust margin as needed */
+    }
+
+    .badge {
+        position: absolute;
+        top: 2px; /* Adjust top position as needed */
+        right: -15px; /* Adjust right position as needed */
+        min-width: 20px;
+        padding: 4px;
+        border-radius: 50%;
+        text-align: center;
+        font-size: 10px;
+    }
+
+    /* You can adjust the styles for the badge color and text color as needed */
+    .badge-danger {
+        background-color: red;
+        color: white;
+    }
+</style>
+<script>
+    function truncateText(text, maxLength) {
+        var words = text.split(' ');
+        if (words.length > maxLength) {
+            return words.slice(0, maxLength).join(' ') + '...';
+        }
+        return text;
+    }
+</script>
+<div class="fixed-navbar">
+    <div class="pull-left">
+        <button type="button" class="menu-mobile-button glyphicon glyphicon-menu-hamburger js__menu_mobile"></button>
+        <h1 class="page-title">
+            Global Close Calendar(GCC)
+        </h1>
+        <!-- /.page-title -->
+    </div>
+    <!-- /.pull-left -->
+    <div class="pull-right">
+        @if(_userInfo.RoleId=="2"){
+          <div class="ico-item" style="font-weight:600;color:#FFFFFF">
+              <a href="@Url.Action("Index","Page")" target="_blank" id="show">
+            <span id="group">
+
+                    <i class="fa fa-bell"></i>
+             
+                    <span class="badge badge-danger" id="cntunread" style="background-color:red !important;"></span>
+            </span>
+                </a>
+        </div>
+     @*    <div id="menu">
+                <a href="#" style="border-bottom:1px solid black !important; text-align:center !important;"> <span class="text-center" style="font-weight:bolder;">Notification</span></a>
+            <div id="submenu">
+                </div>
+
+                <a href="@Url.Action("ViewAllNotification","Home")" class="text-cneter" style="border-top:1px solid black !important; text-align:center !important;"><span>View All</span></a>
+        </div> *@
+        }
+       <div class="ico-item" style="font-weight:600;color:#FFFFFF">
+            <i class="ti-user"></i>&nbsp; <span style="color:#ffffff;font-size:14px;">@_userInfo.Name</span>
+            <!--<ul class="sub-ico-item">-->
+                @*<li><a href="#">Settings</a></li>*@
+                <!--<li><a class="js__logout" href="#">Log Out</a></li>
+            </ul>-->
+            <!-- /.sub-ico-item -->
+        </div>
+    </div>
+    <!-- /.pull-right -->
+</div>
+<!-- /.fixed-navbar -->
+<style>
+    #group a:hover{
+        color:white;
+    }
+
+    #menu {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+    }
+
+        #menu a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+            #menu a:hover {
+                background-color: #f1f1f1;
+            }
+
+    #show{
+        color:white;
+    }
+    #show:hover{
+        color:white;
+    }
+
+</style>
+<script>
+    // function toggleMenu() {
+    //     var menu = document.getElementById("menu");
+    //     if (menu.style.display === "none" || menu.style.display === "") {
+    //         menu.style.display = "block";
+    //     } else {
+    //         menu.style.display = "none";
+    //     }
+    // }
+    $(document).ready(function () {
+        // Define a function to make the AJAX call
+        function makeAjaxCall() {
+            $.ajax({
+                url: '@Url.Action("GetResult", "Home")',
+                type: 'POST',
+                success: function (response) {
+                    $('#cntunread').text(response.total);
+                    // $('#submenu').append(response.template);
+                },
+                error: function (xhr, status, error) {
+                    // Handle error response
+                    console.error(error); // Log error to console or perform error handling
+                }
+            });
+        }
+
+        // Make the initial AJAX call
+        makeAjaxCall();
+
+        // Schedule to make the AJAX call every 20 seconds
+        setInterval(makeAjaxCall, 1000); // 20 seconds in milliseconds
+    });
+
+</script>

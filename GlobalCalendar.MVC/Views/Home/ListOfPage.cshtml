@@ -1,0 +1,138 @@
+﻿@model IEnumerable<GlobalCalendar.MVC.DTO.TaskModel>
+
+@{
+    int srno = 0;
+    ViewData["Title"] = "Owner Task";
+   
+}
+<div><h3 style="text-align:center;" id="title">Owner Task </h3></div>
+@*<div class="mt-3"></div>*@
+<div class="table-responsive">
+<table class="table" id="example">
+   
+    <thead>
+        <tr>
+            <th>
+                SR. NO.
+            </th>
+            <th>Company Code/Company Name</th>
+            <th>
+               Task Name
+            </th>
+            <th>
+              Task Description
+            </th>
+            <th>Month</th>
+            <th>
+               Due Date For Submission
+            </th>
+           <th>Submission Date</th>
+            <th>
+                Action
+               @* @Html.DisplayNameFor(model => model.IsAcceptTask)*@
+            </th>
+           
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td class="text-center">
+               @(srno+=1)
+            </td>
+                    <td class ="text-center">@item.Company</td>
+            <td style="text-align:left !important;">
+                @Html.DisplayFor(modelItem => item.TaskName)
+            </td>
+                <td style="text-align:left !important;">
+                @Html.DisplayFor(modelItem => item.TaskDescription)
+            </td>
+                    <td class="text-center">@item.MonthTask</td>
+                <td class="text-center">
+                @item.ClosingDate.ToShortDateString()
+            </td>
+                <td class="text-center">
+                    
+                        @item.SubmitTaskDate
+                    
+                    
+                </td>
+                <td class="text-center">
+                   
+                  
+                    @if(item.IsAcceptTask && item.IsTaskReturned && !item.IsSubmitTask && !item.IsApprove){
+                         <a asp-action="SubmitTask" asp-controller="Home" asp-route-Id="@item.Id" class="btn" style="background-color:orange; cursor: default;color:white;">
+                        Task Returned
+                    </a>
+                    }
+                    else if (!item.IsAcceptTask && item.IsTaskReturned && !item.IsSubmitTask && !item.IsApprove){
+                        <a asp-action="SubmitTask" asp-controller="Home" asp-route-Id="@item.Id" class="btn" style="background-color:orange; cursor: default;color:white;">
+                            Task Returned
+                        </a>
+                    }
+                    else if (!item.IsAcceptTask && !item.IsTaskReturned && !item.IsSubmitTask && !item.IsApprove)
+                    {
+                        <a asp-action="SubmitTask" asp-controller="Home" asp-route-Id="@item.Id" class="btn btn-primary">
+                            Task assigned
+                        </a>
+                    }
+
+
+                    else if (item.IsAcceptTask && !item.IsSubmitTask && !item.IsApprove && !item.IsTaskReturned)
+                    {
+                    
+                     
+                        <a asp-action="SubmitTask" asp-controller="Home" asp-route-Id="@item.Id" class="btn" style="background-color:orange; cursor: default;color:white;">
+                            In Progress
+                        </a>
+                    }
+                    else if (item.IsAcceptTask && item.IsSubmitTask && !item.IsApprove && !item.IsTaskReturned)
+                    {
+                        <a asp-action="SubmitTask" asp-controller="Home" asp-route-Id="@item.Id" class="btn" style="background-color:green; cursor: default;color:white">
+                            Completed
+                        </a>
+                    }
+                    else if ((item.IsAcceptTask || item.IsSubmitTask) && !item.IsApprove)
+                    {
+                        <a asp-action="SubmitTask" asp-controller="Home" asp-route-Id="@item.Id" class="btn" style="background-color:green; cursor: default;color:white">
+                            Completed
+                        </a>
+                    }
+                    else if (item.IsAcceptTask && item.IsSubmitTask && item.IsApprove && !item.IsTaskReturned)
+                    {
+                        <a asp-action="SubmitTask" asp-controller="Home" asp-route-Id="@item.Id" class="btn disabled" style="background-color:green;color:white; pointer-events: none; opacity: 0.5;">
+                            Approved
+                        </a>
+                    }
+                    else if ((item.IsAcceptTask || item.IsSubmitTask) && item.IsApprove && !item.IsTaskReturned)
+                    {
+                        <a asp-action="SubmitTask" asp-controller="Home" asp-route-Id="@item.Id" class="btn disabled" style="background-color:green;color:white; pointer-events: none; opacity: 0.5;">
+                            Approved
+                        </a>
+                    }
+                    
+                   
+                 
+              
+            </td>
+         
+        </tr>
+}
+    </tbody>
+</table>
+</div>
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+<!-- DataTables JavaScript -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            autoFill: true,
+            paging: true,
+            search: true,
+            //pageLength: 5
+        });
+    });
+</script>

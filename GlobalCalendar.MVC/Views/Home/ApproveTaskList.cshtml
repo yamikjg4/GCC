@@ -1,0 +1,99 @@
+﻿@model IEnumerable<GlobalCalendar.MVC.DTO.ListApproveTask>
+
+@{
+    ViewData["Title"] = "Approve Task List";
+    var srno = 0;
+}
+<div><h3 style="text-align:center;" id="title">Task List For Approver</h3></div>
+<div class="table-responsive">
+<table class="table" id="example">
+    <thead>
+        <tr>
+            <th>
+                SR. NO.
+            </th>
+            <th>Company Code/Company Name</th>
+            <th>
+           Task Name
+            </th>
+            <th>
+              Task Description
+            </th>
+            <th>
+                Month
+            </th>
+            <th>
+                Duedate Of Approval
+            </th>
+            <th>
+                Owner Name
+            </th>
+            <th>
+              Submitted Date
+            </th>
+            @*<th>Approved Date</th>*@
+           @* <th></th>*@
+           <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+                <td class="text-center">
+               @(srno+=1)
+            </td>
+                <td class="text-center">@item.Company</td>
+            <td style="text-align:left !important;">
+                @Html.DisplayFor(modelItem => item.TaskName)
+            </td>
+                <td style="text-align:left !important;">
+                @Html.DisplayFor(modelItem => item.TaskDescription)
+            </td>
+                <td class="text-center">
+                @item.MonthTask
+            </td>
+                <td class="text-center">
+                @item.Duedateforapproval.ToShortDateString()
+            </td>
+           
+                <td class="text-center">
+                @Html.DisplayFor(modelItem => item.EmpName)
+            </td>
+                <td class="text-center">@item.SubmitTaskDate</td>
+          @*  <td>@item.ApproveDate</td>*@
+                <td class="text-center">
+                @if(!item.IsApprove && item.IsTaskReturned){
+                        <a asp-action="ApproveView" asp-controller="Home" asp-route-Id="@item.Id" class="btn" style="color:white;    background-color: orange;">Task Resubmitted</a>
+
+                }
+                else if(!item.IsApprove && !item.IsTaskReturned){
+                    <a asp-action="ApproveView" asp-controller="Home" asp-route-Id="@item.Id" class="btn btn-primary">Approve</a>
+                }
+                else{
+                        <a asp-action="ApproveView" asp-controller="Home" asp-route-Id="@item.Id" class="btn disabled" style="background-color:green;color:white; pointer-events: none; opacity: 0.5;">Approved</a>
+                }
+                </td>
+          @*  <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>*@
+        </tr>
+}
+    </tbody>
+</table>
+</div>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+<!-- DataTables JavaScript -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            autoFill: true,
+            paging: true,
+            search: true,
+            //pageLength: 5
+        });
+    });
+</script>

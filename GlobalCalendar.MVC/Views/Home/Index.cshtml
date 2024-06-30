@@ -1,0 +1,186 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<div class="container">
+    <section>
+        <h1 style="font-weight:bold;color:#03477;text-align:center;" id="title">DASHBOARD</h1>
+    </section>
+</div>
+<div class="container-fluid">
+    <div class="row">
+
+        <div class="col-md-12 col-12 text-right">
+            <button class="btn btn-sm" style="background-color:#c2e9fb;" type="button" id="dropdownMenuDate2">
+                <i class="mdi mdi-calendar"></i>  @(DateTime.Now.ToString("dd-MMM-yyyy"))
+            </button>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-6 col-12">
+            <div><h3 style="margin-left: 125px;">Owner Wise Chart</h3></div>
+            <div style="display: inline-block;">
+                <canvas id="taskChart" width="500" height="450"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6 col-12">
+            <div><h3 style="margin-left: 125px;">Approver Wise Chart</h3></div>
+            <div style="display: inline-block;">
+                <canvas id="taskChart1" width="500" height="450"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    var companies = @Html.Raw(Json.Serialize(ViewBag.Chart));
+    console.log(companies);
+    var ctx2 = document.getElementById('taskChart').getContext('2d');
+    var myChart = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: companies.map(function (company) {
+                return company.companyName
+            }),
+            datasets: [
+                
+                {
+                    label: 'Pending Task',
+                    data: companies.map(function (company) { return  company.totalTaskPendingNotDue }),
+                    backgroundColor: 'orange',
+                    borderColor: 'rgba(255, 206, 86, 1)',
+                    borderWidth: 1
+                }, {
+                label: 'Completed Task',
+                data: companies.map(function (company) {
+                    return company.isApprove
+                }),
+                backgroundColor: 'green',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }, {
+                label: 'Overdue Task',
+                data: companies.map(function (company) {
+                    return company.totalTaskPendingOverDue
+                }),
+                backgroundColor: 'red',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    stacked: true // Grouped bar chart
+                },
+                y: {
+                    beginAtZero: true,
+                         stacked: true
+                }
+            }
+        },
+        plugins: [{
+            id: 'datalabels',
+            afterDraw: function (chart) {
+                var ctx = chart.ctx;
+                var canvas = chart.canvas;
+                var chartHeight = canvas.clientHeight;
+                // var chartHeight = chart.chartArea.bottom - chart.chartArea.top;
+                chart.data.datasets.forEach(function (dataset, i) {
+                    var meta = chart.getDatasetMeta(i);
+                    meta.data.forEach(function (element, index) {
+
+                        var data = dataset.data[index];
+                        console.log(data);
+                        if (data > 0) {
+                            debugger;
+                            ctx.fillStyle = 'white';
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'bottom';
+                            ctx.fillText(data, element.x, element.y + (data * chartHeight *0.0285));
+                        }
+                    });
+                });
+            }
+        }]
+    });
+
+</script>
+
+<script>
+
+    var companies = @Html.Raw(Json.Serialize(ViewBag.Chart2));
+    console.log(companies);
+    var ctx = document.getElementById('taskChart1').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: companies.map(function (company) {
+                return company.companyName
+            }),
+            datasets: [
+                {
+                    label: 'Pending Task',
+                    data: companies.map(function (company) { return  company.totalTaskPendingNotDue }),
+                    backgroundColor: 'orange',
+                    borderColor: 'rgba(255, 206, 86, 1)',
+                    borderWidth: 1
+                },
+                {
+                label: 'Completed Task',
+                data: companies.map(function (company) {
+                    return company.isApprove
+                }),
+                backgroundColor: 'green',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            },
+            {
+                label: 'Overdue Task',
+                data: companies.map(function (company) {
+                    return company.totalTaskPendingOverDue
+                }),
+                backgroundColor: 'red',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }
+            ]
+        },
+        options: {
+            scales: {
+                x: {
+                    stacked: true // Grouped bar chart
+                },
+                y: {
+                    beginAtZero: true,
+                         stacked: true
+                }
+            }
+        },
+        plugins: [{
+            id: 'datalabels',
+            afterDraw: function (chart) {
+                var ctx = chart.ctx;
+                var chartHeight = chart.chartArea.bottom - chart.chartArea.top;
+                chart.data.datasets.forEach(function (dataset, i) {
+                    var meta = chart.getDatasetMeta(i);
+                    meta.data.forEach(function (element, index) {
+
+                        var data = dataset.data[index];
+                                           if (data > 0) {
+                            debugger;
+                            ctx.fillStyle = 'white';
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'bottom';
+                            ctx.fillText(data, element.x, element.y + (data * chartHeight * 0.01));
+                        }
+                    });
+                });
+            }
+        }]
+    });
+
+</script>

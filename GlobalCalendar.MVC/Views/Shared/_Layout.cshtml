@@ -1,0 +1,266 @@
+﻿@using GlobalCalendar.MVC.SessionManagement
+@{
+    UserInfo _userInfo = Context.Session.GetObject<UserInfo>("__UserInfo");
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon"  href="~/images/S_logo_png.png"/>
+    <title>@ViewData["Title"] </title>
+
+    <!-- Main Styles -->
+    <link href="~/css/custom-styles.css" rel="stylesheet" />
+    @*<link rel="stylesheet" href="~/Content/assets/styles/style.min.css">*@
+    <link rel="stylesheet" href="~/assets/styles/style.min.css">
+
+    <!-- Themify Icon -->
+    <link rel="stylesheet" href="~/assets/fonts/themify-icons/themify-icons.css">
+
+    <!-- mCustomScrollbar -->
+    <link rel="stylesheet" href="~/assets/plugin/mCustomScrollbar/jquery.mCustomScrollbar.min.css">
+
+    <!-- Waves Effect -->
+    <link rel="stylesheet" href="~/assets/plugin/waves/waves.min.css">
+
+    <!-- Sweet Alert -->
+    <link rel="stylesheet" href="~/assets/plugin/sweet-alert/sweetalert.css">
+
+    <!-- Percent Circle -->
+    <link rel="stylesheet" href="~/assets/plugin/percircle/css/percircle.css">
+
+    <!-- Chartist Chart -->
+    <link rel="stylesheet" href="~/assets/plugin/chart/chartist/chartist.min.css">
+
+    <!-- Form Wizard -->
+    <link rel="stylesheet" href="~/assets/plugin/form-wizard/prettify.css">
+
+    <!-- Popover -->
+    <link rel="stylesheet" href="~/assets/plugin/popover/jquery.popSelect.min.css">
+
+    <!-- Select2 -->
+    <link rel="stylesheet" href="~/assets/plugin/select2/css/select2.min.css">
+
+    <!-- FullCalendar -->
+    <link rel="stylesheet" href="~/assets/plugin/fullcalendar/fullcalendar.min.css">
+    <link rel="stylesheet" href="~/assets/plugin/fullcalendar/fullcalendar.print.css" media='print'>
+    <link href="~/css/Site.css" rel="stylesheet" />
+    <style>
+      #title{
+            color: #008080 !important;
+      }
+    </style>
+@*
+    <script src="~/Content/assets/scripts/jquery.min.js"></script>*@
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    
+    <!-- Data Tables -->
+    <script src="~/assets/plugin/datatables/media/js/jquery.dataTables.min.js"></script>
+    <script src="~/assets/plugin/datatables/media/js/dataTables.bootstrap.min.js"></script>
+    <script src="~/assets/plugin/datatables/extensions/Responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/assets/plugin/datatables/extensions/Responsive/js/responsive.bootstrap.min.js"></script>
+    <script src="~/assets/scripts/datatables.demo.min.js"></script>
+   
+    <script src="~/assets/scripts/modernizr.min.js"></script>
+    <script src="~/assets/plugin/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/assets/plugin/mCustomScrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
+
+    <script src="~/assets/plugin/sweet-alert/sweetalert.min.js"></script>
+    <script src="~/assets/plugin/waves/waves.min.js"></script>
+
+    <!-- Sparkline Chart -->
+    <script src="~/assets/plugin/chart/sparkline/jquery.sparkline.min.js"></script>
+    <script src="~/assets/scripts/chart.sparkline.init.min.js"></script>
+
+    <!-- Percent Circle -->
+    <script src="~/assets/plugin/percircle/js/percircle.js"></script>
+
+    <!-- Google Chart -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <!-- Chartist Chart -->
+    <script src="~/assets/plugin/chart/chartist/chartist.min.js"></script>
+    <script src="~/assets/scripts/jquery.chartist.init.min.js"></script>
+
+    <!-- FullCalendar -->
+    <script src="~/assets/plugin/moment/moment.js"></script>
+    <script src="~/assets/plugin/fullcalendar/fullcalendar.min.js"></script>
+    <script src="~/assets/scripts/fullcalendar.init.js"></script>
+
+
+    <!-- Form Wizard -->
+    <script src="~/assets/plugin/form-wizard/prettify.js"></script>
+    <script src="~/assets/plugin/form-wizard/jquery.bootstrap.wizard.min.js"></script>
+    <script src="~/assets/plugin/jquery-validation/jquery.validate.min.js"></script>
+    <script src="~/assets/scripts/form.wizard.init.min.js"></script>
+    <script src="~/assets/plugin/nprogress/nprogress.js"></script>
+    <script src="~/assets/scripts/main.min.js"></script>
+
+    <!-- Popover -->
+    <script src="~/assets/plugin/popover/jquery.popSelect.min.js"></script>
+
+    <!-
+    deb- Select2 -->
+    <script src="~/assets/plugin/select2/js/select2.min.js"></script>
+
+    <!-- Multi Select -->
+    <script src="~/assets/plugin/multiselect/multiselect.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="~/toastr/toastr.js"></script>
+    <link href="~/toastr/toastr.css" rel="stylesheet" />
+   
+                                                                                @if (TempData["SuccesMessage"] !=null){
+<script>
+            toastr.success("Success", @TempData["SuccesMessage"] );
+</script>
+                                                                                }
+                                                                                @if (TempData["ErrorMessage"] != null){
+        <script>
+            toastr.error("Error", @TempData["ErrorMessage"]);
+        </script>
+                                                                                }
+    <script>
+        $(document).ready(function () {
+
+            // Attach keydown event to elements with class 'numeric-only'
+            $(document).on('keydown', '.numeric-only', allowOnlyNumbers);
+
+            // Trigger a click event on an element with class 'js__menu_mobile'
+            $(".js__menu_mobile").click();
+        });
+
+
+
+        function allowOnlyNumbers(e) {
+            // Allow: backspace, delete, tab, escape, enter, and .
+            if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                // Allow: Ctrl+A
+                (e.keyCode === 65 && e.ctrlKey === true) ||
+                // Allow: home, end, left, right
+                (e.keyCode >= 35 && e.keyCode <= 39)) {
+                // Let it happen, don't do anything
+                return;
+            }
+            // Ensure that it is a number and stop the keypress
+            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                e.preventDefault();
+            }
+        }
+    </script>
+                                                                              
+</head>
+<body>
+    @if(_userInfo.RoleId == "1"){
+        @await Html.PartialAsync("_PartialSideBarAdmin")
+    }
+    else{
+    @await Html.PartialAsync("_PartialSideBar")
+    }
+    @await Html.PartialAsync("_PartialTopBar")
+
+    <div id="wrapper">
+        <div class="main-content">
+            @RenderBody()
+        </div>
+    </div>
+    @{
+        var currentAction = ViewContext.RouteData.Values["action"];
+        var currentController = ViewContext.RouteData.Values["controller"];
+        var currentRoutePath = "/GlobalCalendar" + "/" + currentController + "/" + currentAction;
+    }
+
+    <script>
+       
+        //// Select all menu items
+        //var menuItems = document.querySelectorAll('.menu_active');
+        //var currentRoutePath='@currentRoutePath';
+        //if ($('#dashboard').is(':visible')) {
+        //    var dashboardElement = document.getElementById("dashboard");
+        //}
+        //// Iterate through each menu item
+        //menuItems.forEach(function (menuItem) {
+        //    // Get the href attribute of the menu item
+        //    var menuItemHref = menuItem.querySelector('a').getAttribute('href');
+        //        console.log(menuItemHref);
+        //    // Check if the current route path matches the href attribute
+        //    if (currentRoutePath == menuItemHref) {
+        //        if ($('#dashboard').is(':visible')) {
+        //            dashboardElement.classList.remove("current");
+        //        }
+        //        // Highlight the menu item by adding a specific class
+        //        menuItem.classList.add('current');
+        //    }
+        //});
+        // Function to highlight the active menu item
+        function highlightActiveMenuItem() {
+            // Select all menu items
+            var menuItems = document.querySelectorAll('.menu_active');
+            var currentRoutePath = '@currentRoutePath';
+            if ($('#dashboard').is(':visible')) {
+                var dashboardElement = document.getElementById("dashboard");
+            }
+
+            // Iterate through each menu item
+            menuItems.forEach(function (menuItem) {
+                // Get the href attribute of the menu item
+                var menuItemHref = menuItem.querySelector('a').getAttribute('href');
+                console.log(menuItemHref);
+                // Check if the current route path matches the href attribute
+                if (currentRoutePath == menuItemHref) {
+                    if ($('#dashboard').is(':visible')) {
+                        dashboardElement.classList.remove("current");
+                    }
+                    // Highlight the menu item by adding a specific class
+                    menuItem.classList.add('current');
+                }
+            });
+        }
+
+        // Call the function when the DOM content is fully loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            highlightActiveMenuItem();
+        });
+
+     
+    </script>
+    <script>
+        $(document).ready(function () {
+            // Define a function to make the AJAX call
+            function makeAjaxCall2() {
+                $.ajax({
+                    url: '@Url.Action("GetSession", "Home")',
+                    type: 'POST',
+                    success: function (response) {
+                        if (response.data == '' || response.data == null) {
+                            window.location.href = '/GlobalCalendar/Login/Index';
+                        }
+                        // $('#submenu').append(response.template);
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error response
+                        console.error(error); // Log error to console or perform error handling
+                    }
+                });
+            }
+
+            // Make the initial AJAX call
+            makeAjaxCall2();
+
+            // Schedule to make the AJAX call every 20 seconds
+            setInterval(makeAjaxCall2, 1000); // 20 seconds in milliseconds
+        });
+
+    </script>
+   
+</body>
+</html>

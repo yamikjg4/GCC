@@ -1,0 +1,167 @@
+﻿@model GlobalCalendar.MVC.DTO.UpdateMatrixDetail
+
+@{
+    Layout = null;
+}
+
+<!-- Bootstrap CSS -->
+<style>
+    .form-control.dropdown {
+        display: block;
+        width: 100%;
+        height: calc(1.5em + 0.75rem + 2px);
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        position: relative;
+    }
+
+        .form-control.dropdown select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+            border: none;
+            background: transparent;
+            font-size: inherit;
+            line-height: inherit;
+        }
+
+        .form-control.dropdown::after {
+            content: '\25BC'; /* Downward arrow */
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            pointer-events: none;
+            transform: translateY(-50%);
+            color: #495057;
+        }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="PostPartialData" asp-controller="Admin" id="myForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group"  style="display:none">
+                <label asp-for="TaskId" class="control-label"></label>
+                <input asp-for="TaskId" class="form-control" />
+                <span asp-validation-for="TaskId" class="text-danger"></span>
+            </div>
+            @if(!Model.IsSubmitTask){
+            <div class="form-group">
+                <label class="control-label">Primary Owner<span class="text-danger">*</span></label>
+               @*  <input asp-for="PrimayOwnerDomainId" class="form-control" />
+                *@   @Html.DropDownListFor(m => m.PrimayOwnerDomainId, (SelectList)ViewBag.UserList, new { @class = "form-control dropdown", id = "PrimaryOwner" })
+
+
+
+                <span asp-validation-for="PrimayOwnerDomainId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label  class="control-label">Secondary Owner<span class="text-danger">*</span></label>
+                
+                @Html.DropDownListFor(m => m.SecondaryOwnerDomainId, (SelectList)ViewBag.UserList, new { @class = "form-control" ,id="SecondaryOwner"})
+                <span asp-validation-for="SecondaryOwnerDomainId" class="text-danger"></span>
+                </div>
+            }
+            else
+            {
+                <div class="form-group disabled">
+                    <label class="control-label">Primary Owner<span class="text-danger">*</span></label>
+                    @*  <input asp-for="PrimayOwnerDomainId" class="form-control" />
+                *@ 
+                    @Html.DropDownListFor(m => m.PrimayOwnerDomainId, (SelectList)ViewBag.UserList, new { @class = "form-control", id = "PrimaryOwner" })
+                    <span asp-validation-for="PrimayOwnerDomainId" class="text-danger"></span>
+                </div>
+                <div class="form-group disabled">
+                    <label class="control-label">Secondary Owner<span class="text-danger">*</span></label>
+
+                    @Html.DropDownListFor(m => m.SecondaryOwnerDomainId, (SelectList)ViewBag.UserList, new { @class = "form-control", id = "SecondaryOwner" })
+                    <span asp-validation-for="SecondaryOwnerDomainId" class="text-danger"></span>
+                </div>
+            }
+            <div class="form-group">
+                <label class="control-label">Primary Approver<span class="text-danger">*</span></label>
+                @Html.DropDownListFor(m => m.PrimaryAproverDomainId, (SelectList)ViewBag.UserList, new { @class = "form-control",id="PrimaryApprover" })
+                <span asp-validation-for="PrimaryAproverDomainId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Secondary Approver<span class="text-danger">*</span></label>
+                @Html.DropDownListFor(m => m.SecondaryApproverDomainId, (SelectList)ViewBag.UserList, new { @class = "form-control",id="SecondaryApprover" })
+                <span asp-validation-for="SecondaryApproverDomainId" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <div class="col text-right">
+                    <input type="submit" value="Update" class="btn btn-default" />
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+<script>
+
+    function handleDelayedDropdownOpening(event) {
+        setTimeout(function () {
+            $(event.target).siblings('.select2-container').find('.select2-dropdown').css('display', 'block');
+        }, 1000);
+    }
+
+    
+
+    $(document).ready(function () {
+        $('#PrimaryOwner').select2({
+            
+            minimumInputLength: 0,
+            maximumSelectionLength: 2,
+          
+           
+        });
+        $('#SecondaryOwner').select2({
+            minimumInputLength: 0,
+            maximumSelectionLength: 2,
+            
+        });
+        $('#PrimaryApprover').select2({
+            minimumInputLength: 0,
+            maximumSelectionLength: 2,
+           
+        });
+        $('#SecondaryApprover').select2({
+            minimumInputLength: 0,
+            maximumSelectionLength: 2,
+           
+        });
+           $('#PrimaryOwner').on('select2:open', handleDelayedDropdownOpening);
+        $('#SecondaryOwner').on('select2:open', handleDelayedDropdownOpening);
+        $('#PrimaryApprover').on('select2:open', handleDelayedDropdownOpening);
+        $('#SecondaryApprover').on('select2:open', handleDelayedDropdownOpening);
+        function confirmSubmission() {
+            // Use a browser's built-in confirm dialog to ask the user for confirmation
+            return confirm("Are you sure you want to update the record?");
+        }
+
+        // Submit event handler for the form
+        $('#myForm').submit(function (event) {
+            // Check if the user confirms the submission
+            if (!confirmSubmission()) {
+                // If not confirmed, prevent the form from submitting
+                event.preventDefault();
+            }
+        });
+    });
+</script>
+
+

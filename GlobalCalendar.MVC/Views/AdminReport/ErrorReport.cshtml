@@ -1,0 +1,202 @@
+﻿
+@{
+    ViewData["Title"] = "ErrorReport";
+}
+<style>
+    .dt-left {
+        text-align: left;
+    }
+</style>
+<div><h3 style="text-align:center;" id="title">Error report</h3></div>
+<div class="container">
+    <div class="row" style="margin-bottom:10px !important;">
+        <div class="col-12" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+            <div class="form-group">
+                <label for="exampleInputEmail1">Year<span class="text-danger"> * </span></label>
+                @Html.DropDownList("Year", ViewBag.YearMaster, "-- Select Year --", new { @class = "form-control" })
+                <span id="emailHelp" class="form-text text-danger" style="display:none;"></span>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Month</label>
+                @Html.DropDownList("Month", ViewBag.Months, "-- Select Month --", new { @class = "form-control" })
+                @*  <span id="emailHelp" class="form-text text-danger" style="display:none;"></span>*@
+            </div>
+         
+            <div class="form-group">
+                <label for="exampleInputEmail1">Company<span class="text-danger"> * </span></label>
+                @Html.DropDownList("Company", ViewBag.Company, "-- Select Company --", new { @class = "form-control" })
+                <span id="companyhelp" class="form-text text-danger" style="display:none;"></span>
+            </div>
+         
+            @* <div id="btn-group">
+
+            <button type="button" onclick="filterdata()" class="btn btn-primary">Search</button></div>
+
+            <button type="button" onclick="downloadFile()" class="btn btn-secondary">Export To Excel</button>
+
+            </div>*@
+         
+
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-sm-12 col-md-12 col-xl-12">
+            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups" style="float:right !important;">
+                <div class="btn-group" id="btn-group" role="group">
+                    <button type="button" onclick="filterdata()" class="btn btn-primary"><i class="fa fa-search"></i> Search</button>
+                </div>
+                <div class="btn-group" role="group">
+                    <button type="button" onclick="downloadFile()" class="btn" style="background-color:green;color:white;"><i class="fa fa-file-excel-o"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="dCompany" style="display:none !important; margin-top:3%">
+    <table class="table" id="tbl">
+        <thead style="background-color:gray;">
+            <tr>
+                <th>
+                    Company code/
+                    Company name
+                </th>
+                <th>Task number</th>
+                <th>Task name</th>
+                <th>Task owner</th>
+                <th>Comments for rejection</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    </div>
+    </div>
+    <script>
+    function filterdata() {
+        var year = $('#Year').val();
+        var company = $('#Company').val();
+        //var rept = $('#rept').val();
+        var Month = $('#Month').val();
+        var errorlog = 0;
+
+        if (year == '' || year == 0 || isNaN(year)) {
+            errorlog++;
+            $('#emailHelp').text("Please Select Year").show();
+        }
+        if (company == '' || company == 0 || isNaN(company)) {
+            errorlog++;
+            $('#companyhelp').text('Please Select Company').show();
+        }
+        //if (rept == '' || rept == 0 || isNaN(rept)) {
+        //    $('#report').text('Please Select Report Type').show();
+        //    errorlog++;
+        //}
+        if (errorlog != 0) {
+            return false;
+        }
+        else{
+            $('#emailHelp').hide();
+            $('#companyhelp').hide();
+            var dataObject = {
+                Month: Month,
+                Year: year,
+                company: company,
+                //rept: rept
+            };
+            $.ajax({
+                url: '@Url.Action("CreateErrorReport","AdminReport")',
+                type: 'POST',
+                async: false,
+                data: dataObject,
+                success: function (response) {
+                    //if (response.data && response.data.length > 0) {
+                        $('#dCompany').css('display', 'block');
+                        if ($.fn.DataTable.isDataTable('#tbl')) {
+                            $('#tbl').DataTable().destroy();
+                        }
+                        $('#tbl').DataTable({
+                            data: response.data,
+                            columns: [
+                            { data: 'company' ,className: 'dt-left' },
+                                { data: 'taskNo' },
+                            { data: 'taskName', className: 'dt-left' },
+                            { data: 'empName', className: 'dt-left' },
+                            { data: 'comment', className: 'dt-left' },
+                            ],
+                            columnDefs: [
+                                { targets: 1, className: 'dt-left' } // Targeting the first column (index 0) and applying the class 'dt-left' for left alignment
+                            ]
+                        });
+                    //} 
+        //            else {
+        //                $('#dCompany').css('display', 'block');
+        //                if ($.fn.DataTable.isDataTable('#tbl')) {
+        //                    $('#tbl').DataTable().destroy();
+        //                }
+        //                // Show a message indicating that there is no data
+        //                // For example:
+        //                  $('#tbl tbody').empty();
+        //// Append a single row with the message
+        //$('#tbl tbody').append('<tr><td colspan="5">No data available</td></tr>');
+        //            }
+                },
+                error: function (xhr, status, error) {
+                    // Handle error
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+        }
+        function downloadFile() {
+            var year = $('#Year').val();
+            var company = $('#Company').val();
+            //var rept = $('#rept').val();
+            var Month = $('#Month').val();
+            var errorlog = 0;
+
+            if (year == '' || year == 0 || isNaN(year)) {
+                errorlog++;
+                $('#emailHelp').text("Please Select Year").show();
+            }
+            if (company == '' || company == 0 || isNaN(company)) {
+                errorlog++;
+                $('#companyhelp').text('Please Select Company').show();
+            }
+            //if (rept == '' || rept == 0 || isNaN(rept)) {
+            //    $('#report').text('Please Select Report Type').show();
+            //    errorlog++;
+            //}
+            if (errorlog != 0) {
+                return false;
+            } else {
+                $('#emailHelp').hide();
+                $('#companyhelp').hide();
+                //$('#report').hide();
+                var dataObject = {
+                    Month: Month,
+                    Year: year,
+                    company: company,
+                    //rept: rept
+                };
+                $.ajax({
+                    url: '@Url.Action("ExportErrorReport", "AdminReport")',
+                    type: 'POST',
+                    data: dataObject,
+                    xhrFields: {
+                        responseType: 'blob'
+                    }
+                }).done(function (response) {
+                    var blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                    var url = window.URL.createObjectURL(blob);
+                    var link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'ErrorReport.xlsx';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(url); // Clean up
+                }).fail(function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                });
+            }
+        }
+    </script>

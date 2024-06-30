@@ -1,0 +1,142 @@
+﻿@model GlobalCalendar.MVC.Models.CompanyWiseDate
+<style>
+    .mybtn {
+        border-radius: 3px;
+        text-decoration: none;
+        font-family: sans-serif;
+        font-size: 10px;
+        padding: 8px 15px;
+        background-color: #00ad25;
+        color: #fff;
+        transition-delay: .2s;
+        transition: .3s;
+        font-variant-caps: all-small-caps;
+        box-shadow: 4px 3px 11px 0 #00ad25;
+    }
+
+        .mybtn:hover {
+            background-color: #009420;
+            box-shadow: 4px 3px 11px 0 #005a13;
+        }
+            #UploadFile {
+      display: none;
+    }
+        .input-group-btn:first-child>.btn, .input-group-btn:first-child>.btn-group {
+        top: 25%;
+        padding: 1px 5px;
+        margin-right: -1px;
+        height: 28px;
+    }
+</style>
+
+<div class="container mt-4">
+    <form id="companyForm" asp-action="AddClosingClaenderDetail" asp-controller="Admin" enctype="multipart/form-data" method="post" onsubmit="return validate()">
+       <div class="col-12 col-md-4">     
+           <div class="form-group">
+            <label asp-for="CompanyId">Select Company:</label>
+            @Html.DropDownListFor(m => m.CompanyId, (SelectList)ViewBag.CompanyList, "-- Select Company --", new { @class = "form-control" })
+            @*<div class="invalid-feedback">Please select a company.</div>*@
+            <span class="text-danger" style="display:none;" id="spnvalidatename">Please select company</span>
+        </div>
+        </div>
+        <div class="col-12 col-md-4">
+
+       
+        <div class="form-group">
+            <label asp-for="CloseDate">Select CloseDate:</label>
+            <input asp-for="CloseDate" type="date" class="form-control datepicker" id="CloseDate" />
+           @* <div class="invalid-feedback">Please select a CloseDate.</div>*@
+            <span class="text-danger" style="display:none;" id="spnvalidate">Please select CloseDate</span>
+        </div>
+        </div>
+        
+            @*<span class="input-group-btn" style=" position: static !important;">
+                <button class="btn" type="button" id="btnsubmit" style="    padding: 1px 5px;
+    height: 28px;
+    z-index: 2;
+    margin-left: -1px;
+background-color:orange !important;" onclick="uploadFile()">
+                    <i class="fa fa-upload" aria-hidden="true"></i>
+                </button>
+            </span>*@
+
+            <div class="col-md-4" style="float:right;margin-top:1.5%;">
+        <button type="submit" class="btn btn-primary">Submit</button>
+        @Html.ActionLink("Cancel", "AddClosingCalender", "Admin", null, new { @class = "btn btn-primary", id = "btnOpenModal" })
+        </div>
+    </form>
+</div>
+
+
+
+<script>
+    $(function () {
+    // We can attach the `fileselect` event to all file inputs on the page
+    $(document).on("change", ":file", function () {
+        var input = $(this),
+            numFiles = input.get(0).files ? input.get(0).files.length : 1,
+            label = input
+                .val()
+                .replace(/\\/g, "/")
+                .replace(/.*\//, "");
+        input.trigger("fileselect", [numFiles, label]);
+    });
+        $(document).ready(function () {
+            debugger;
+         
+            $(":file").on("fileselect", function (event, numFiles, label) {
+                var input = $(this)
+                    .parents(".input-group")
+                    .find(":text"),
+                    log = numFiles > 1 ? numFiles + " files selected" : label;
+
+                if (input.length) {
+                    input.val(log);
+                } else {
+                    if (log) alert(log);
+                }
+            });
+        });
+    });
+
+
+    $(document).ready(function () {
+        $('#CloseDate').on('keydown', function (e) {
+            e.preventDefault();
+        });
+        //$('.datepicker').datepicker({
+           
+        //    format: 'dd-mm-yyyy', // Adjust the format as needed
+        //    autoclose: true
+        //});
+
+       
+    });
+    function validate(){
+        debugger;
+      
+     
+        var CompanyId = $('#CompanyId').val();
+        var clsdate = $('#CloseDate').val();
+        var ErrorLog=0;
+        if (CompanyId  == '' || isNaN(CompanyId)){
+            $('#spnvalidatename').show();
+            ErrorLog++;
+        }
+        else{
+            $('#spnvalidatename').hide();
+        }
+        if(clsdate == ''){
+            $('#spnvalidate').show();
+            ErrorLog++;
+        }
+        else{
+            $('#spnvalidate').hide()
+        }
+       
+        if (ErrorLog>0){
+            return false;
+        }
+    }
+    
+</script>

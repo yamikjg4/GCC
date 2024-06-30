@@ -1,0 +1,795 @@
+﻿@model Dictionary<string, int>
+@{
+    ViewData["Title"] = "Dashboard";
+}
+<style>
+    
+        .card.card-light-blue {
+        background: #3165b8;
+        color: #ffffff;
+    }
+    .card{
+        border-radius:20px !important;
+    }
+        .card .card-body {
+        padding: 10px 0.5rem !important;
+    }
+       
+
+    .custom-model-main {
+      text-align: center;
+      overflow: hidden;
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0; /* z-index: 1050; */
+      -webkit-overflow-scrolling: touch;
+      outline: 0;
+      opacity: 0;
+      -webkit-transition: opacity 0.15s linear, z-index 0.15;
+      -o-transition: opacity 0.15s linear, z-index 0.15;
+      transition: opacity 0.15s linear, z-index 0.15;
+      z-index: -1;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    .model-open {
+      z-index: 99999;
+      opacity: 1;
+      overflow: hidden;
+    }
+    .custom-model-inner {
+      -webkit-transform: translate(0, -25%);
+      -ms-transform: translate(0, -25%);
+      transform: translate(0, -25%);
+      -webkit-transition: -webkit-transform 0.3s ease-out;
+      -o-transition: -o-transform 0.3s ease-out;
+      transition: -webkit-transform 0.3s ease-out;
+      -o-transition: transform 0.3s ease-out;
+      transition: transform 0.3s ease-out;
+      transition: transform 0.3s ease-out, -webkit-transform 0.3s ease-out;
+      display: inline-block;
+      vertical-align: middle;
+      width: 600px;
+      margin: 30px auto;
+      max-width: 97%;
+    }
+    .custom-model-wrap {
+      display: block;
+      width: 100%;
+      position: relative;
+      background-color: #fff;
+      border: 1px solid #999;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 6px;
+      -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+      background-clip: padding-box;
+      outline: 0;
+      text-align: left;
+      padding: 20px;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      max-height: calc(100vh - 70px);
+        overflow-y: auto;
+    }
+    .model-open .custom-model-inner {
+      -webkit-transform: translate(0, 0);
+      -ms-transform: translate(0, 0);
+      transform: translate(0, 0);
+      position: relative;
+      z-index: 999;
+    }
+    .model-open .bg-overlay {
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 99;
+    }
+    .bg-overlay {
+      background: rgba(0, 0, 0, 0);
+      height: 100vh;
+      width: 100%;
+      position: fixed;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 0;
+      -webkit-transition: background 0.15s linear;
+      -o-transition: background 0.15s linear;
+      transition: background 0.15s linear;
+    }
+    .close-btn {
+      position: absolute;
+      right: 0;
+      top: -30px;
+      cursor: pointer;
+      z-index: 99;
+      font-size: 30px;
+      color: #fff;
+    }
+
+    @@media screen and (min-width:800px){
+        .custom-model-main:before {
+          content: "";
+          display: inline-block;
+          height: auto;
+          vertical-align: middle;
+          margin-right: -0px;
+          height: 100%;
+        }
+    }
+    @@media screen and (max-width:799px){
+      .custom-model-inner{margin-top: 45px;}
+    }
+
+    .progress {
+        position: relative;
+        height: 160px;
+        width: 160px;
+        cursor: pointer;
+        top: 50%;
+        left: 31%;
+        border:none;
+        background: transparent;
+    }
+
+    .progress-circle {
+        transform: rotate(-90deg);
+        margin-top: -40px;
+    }
+
+    .progress-circle-back {
+        fill: none;
+        stroke: #D2D2D2;
+        stroke-width: 10px;
+    }
+
+    .progress-circle-prog {
+        fill: none;
+        stroke:orange;
+        stroke-width: 10px;
+        stroke-dasharray: 0 999;
+        stroke-dashoffset: 0px;
+        transition: stroke-dasharray 0.7s linear 0s;
+    }
+
+    .progress-text {
+        width: 100%;
+        position: absolute;
+        top: 60px;
+        text-align: center;
+        font-size: 2em;
+    }
+
+    .progress1 {
+        position: relative;
+        height: 160px;
+        width: 160px;
+        cursor: pointer;
+        top: 50%;
+        left: 31%;
+        border: none;
+        background: transparent;
+        /*  margin: -80px 0 0 -80px; */
+    }
+
+    .progress-circle1 {
+        transform: rotate(-90deg);
+        margin-top: -40px;
+    }
+
+    .progress-circle-back1 {
+        fill: none;
+        stroke: #D2D2D2;
+        stroke-width: 10px;
+    }
+
+    .progress-circle-prog1 {
+        fill: none;
+        stroke: green;
+        stroke-width: 10px;
+        stroke-dasharray: 0 999;
+        stroke-dashoffset: 0px;
+        transition: stroke-dasharray 0.7s linear 0s;
+    }
+
+    .progress-text1 {
+        width: 100%;
+        position: absolute;
+        top: 60px;
+        text-align: center;
+        font-size: 2em;
+    }
+
+    .progress2 {
+        position: relative;
+        height: 160px;
+        width: 160px;
+        cursor: pointer;
+        top: 50%;
+        left: 31%;
+        border: none;
+        background: transparent;
+        /*  margin: -80px 0 0 -80px; */
+    }
+
+    .progress-circle2 {
+        transform: rotate(-90deg);
+        margin-top: -40px;
+    }
+
+    .progress-circle-back2 {
+        fill: none;
+        stroke: #D2D2D2;
+        stroke-width: 10px;
+    }
+
+    .progress-circle-prog2 {
+        fill: none;
+        stroke: red;
+        stroke-width: 10px;
+        stroke-dasharray: 0 999;
+        stroke-dashoffset: 0px;
+        transition: stroke-dasharray 0.7s linear 0s;
+    }
+
+    .progress-text2 {
+        width: 100%;
+        position: absolute;
+        top: 60px;
+        text-align: center;
+        font-size: 2em;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="text/javascript" src="https://unpkg.com/chart.js-plugin-labels-dv/dist/chartjs-plugin-labels.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0/dist/chartjs-plugin-datalabels.min.js"></script>
+@* <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script> *@
+
+
+<div class="custom-model-main">
+    <div class="custom-model-inner">
+        <div class="close-btn" style="color:black;font-weight:bolder;">×</div>
+        <div class="custom-model-wrap">
+            <div class="pop-up-content-wrap">
+               <table class="table">
+                   <thead>
+                       <tr>
+                           <th>Sr.No</th>
+                           <th>Report</th>
+                       </tr>
+                   </thead>
+                   <tbody>
+                       <tr>
+                           <td>1</td>
+                            <td><a href="@Url.Action("CompanyWise","AdminReport")">Task Status report for a period</a></td>
+                       </tr>
+                       <tr>
+                           <td>2</td>
+                            <td><a href="@Url.Action("ErrorReport","AdminReport")">Error report for a Period</a></td>
+                       </tr><tr>
+                           <td>3</td>
+                            <td><a href="@Url.Action("ResourceReport","AdminReport")">Resource utilization report</a></td>
+                       </tr><tr>
+                           <td>4</td>
+                            <td><a href="@Url.Action("ExceptionReport","AdminReport")">Exception report for a period</a></td>
+                       </tr>
+                   </tbody>
+               </table>
+            </div>
+        </div>
+    </div>
+    
+</div>
+<div class="container">
+    <section>
+        <h1 style="font-weight:bold;color:#03477;text-align:center;" id="title">DASHBOARD</h1>
+    </section>
+</div>
+<div class="container-fluid">
+  @*   <div style="float:right; margin-bottom:10px">   
+        <select class="form-control" id="Type">
+        <option value="M">Month</option>
+        <option value="Y">Year</option>
+    </select>
+    </div> *@
+
+    <div class="row">
+       
+        <div class="col-md-12 col-12 text-right" >
+            <button class="btn btn-sm" style="background-color:#c2e9fb;" type="button" id="dropdownMenuDate2">
+                <i class="mdi mdi-calendar"></i>  @(DateTime.Now.ToString("dd-MMM-yyyy"))
+            </button>
+        </div>
+    </div>
+    <br/>
+    <div class="row" style="margin-bottom:50px;">
+        <div class="col-md-3 col-12">
+            <div class="card" style="
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125) !important;
+    border-radius:20px !important;">
+                <div class="card-body" style="padding:30px">
+                    <h1 class="text-center" style="color:#008080" id="TotalTask"></h1>
+                                    </div>
+                <div style="background-color:#008080;">
+                    <h5 class="text-center" style="padding:20px;color:white;">Task Count</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-12">
+            <div class="card" style="
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125) !important;
+    border-radius:0px !important;">
+                <div class="card-body text-center" style="padding:30px">
+                    <h5 style="color:black">Pending Task(%)</h5>
+
+                    <div class="progress1">
+                        <svg class="progress-circle" width="200px" height="200px" xmlns="http://www.w3.org/2000/svg">
+                            <circle class="progress-circle-back"
+                                    cx="80" cy="80" r="74"></circle>
+                            <circle class="progress-circle-prog"
+                                    cx="80" cy="80" r="74"></circle>
+                        </svg>
+                        <div class="progress-text" data-progress="0">0%</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-3 col-12">
+            <div class="card" style="
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125) !important;
+    border-radius:0px !important;">
+                <div class="card-body text-center" style="padding:30px">
+                    <h5 style="color:black">Completed Task(%)</h5>
+
+                    <div class="progress1">
+                        <svg class="progress-circle1" width="200px" height="200px" xmlns="http://www.w3.org/2000/svg">
+                            <circle class="progress-circle-back1"
+                                    cx="80" cy="80" r="74"></circle>
+                            <circle class="progress-circle-prog1"
+                                    cx="80" cy="80" r="74"></circle>
+                        </svg>
+                        <div class="progress-text1" data-progress="0">0%</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-3 col-12">
+            <div class="card" style="
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125) !important;
+    border-radius:0px !important;">
+                <div class="card-body text-center" style="padding:30px">
+                    <h5 style="color:black">Overdue Task(%)</h5>
+                    
+                    <div class="progress2">
+                        <svg class="progress-circle2" width="200px" height="200px" xmlns="http://www.w3.org/2000/svg">
+                            <circle class="progress-circle-back2"
+                                    cx="80" cy="80" r="74"></circle>
+                            <circle class="progress-circle-prog2"
+                                    cx="80" cy="80" r="74"></circle>
+                        </svg>
+                        <div class="progress-text2" data-progress="0">0%</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin-bottom:250px;">
+        
+        <div class="col-md-3 col-12">
+            <div class="card card-light-blue">
+                <div class="card-body" style="padding:30px">
+                    <h4 class="text-center" style="margin-bottom:10px;">Reports</h4>
+                    <h1 class="text-center" style="font-size:500px !important;">  <button type="button" class="btn btn-block Click-here" style="background-color:#3165b8 !important;"><span><h3>4</h3></span></button></h1>
+
+                   
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-xs-12 text-center" style="height: 150px;">
+            <h3>Company-wise Allocated Tasks</h3>
+            <div style="display: inline-block;">
+                <canvas id="myPieChart" width="277" height="200"></canvas>
+            </div>
+        </div>
+
+        <div class="col-md-5 col-xs-12 text-center" style="height: 280px;">
+            <h3>Company-wise Task Status</h3>
+            <div style="display: inline-block;">
+                <canvas id="taskChart" width="500" height="450"></canvas>
+        </div>
+        </div>
+     @*   <div class="col-md-6 col-xs-12 text-center" style="height: 280px;">
+            <div style="display: inline-block;">
+                <canvas id="taskChart" width="400" height="500"></canvas>
+            </div>
+        </div>*@
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+       
+            var type = $('#Type').val();
+            $.ajax({
+                url: '@Url.Action("GetRes", "Admin")',
+                type: 'GET',
+                data: { Type: type },
+                success: function (response) {
+                    console.log(response);
+                    var ctx = document.getElementById('myPieChart').getContext('2d');
+
+                    var chartData = response.data;
+
+                var myPieChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: Object.keys(chartData),
+                        datasets: [{
+                            label: 'Task',
+                            data: Object.values(chartData),
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.7)',
+                                'rgba(54, 162, 235, 0.7)',
+                                'rgba(255, 206, 86, 0.7)',
+                                'rgba(200, 197, 98, 0.7)'
+                            ]
+                        }]
+                    },
+                    options: {
+
+                        plugins: {
+                            labels: {}
+                        }
+                    }
+                });
+                
+                var companies = response.lstlstTaskSummary;
+                console.log(companies);
+                var total = 0;
+                    var PendingTask = 0;
+                    var Overduetask = 0;
+                    var completedtask = 0;
+                // Iterate over each object in the JSON data and accumulate the totalTask values
+                companies.forEach(function (item) {
+                    total += item.totalTask;
+                    PendingTask += item.totalTaskPendingNotdue;
+                    Overduetask += item.totalTaskPendingOverdue;
+                    completedtask += item.totalTaskCompleted;
+                });
+                function progressBar(progressVal, totalPercentageVal = 100) {
+                    var strokeVal = (4.64 * 100) / totalPercentageVal;
+                    var x = document.querySelector('.progress-circle-prog');
+                    x.style.strokeDasharray = progressVal * (strokeVal) + ' 999';
+                    var el = document.querySelector('.progress-text');
+                    var from = $('.progress-text').data('progress');
+                    $('.progress-text').data('progress', progressVal);
+                    var start = new Date().getTime();
+
+                    setTimeout(function () {
+                        var now = (new Date().getTime()) - start;
+                        var progress = now / 700;
+                        el.innerHTML = (progressVal / totalPercentageVal * 100).toFixed(2) + '%';
+
+                        if (progress < 1) setTimeout(arguments.callee, 2);
+                    }, 10);
+
+                }
+                function progressBar1(progressVal, totalPercentageVal = 100) {
+                    var strokeVal = (4.64 * 100) / totalPercentageVal;
+                    var x = document.querySelector('.progress-circle-prog1');
+                    x.style.strokeDasharray = progressVal * (strokeVal) + ' 999';
+                    var el = document.querySelector('.progress-text1');
+                    var from = $('.progress-text1').data('progress1');
+                    $('.progress-text1').data('progress1', progressVal);
+                    var start = new Date().getTime();
+
+                    setTimeout(function () {
+                        var now = (new Date().getTime()) - start;
+                        var progress = now / 700;
+                        el.innerHTML = (progressVal / totalPercentageVal * 100).toFixed(2) + '%';
+
+                        if (progress < 1) setTimeout(arguments.callee, 10);
+                    }, 10);
+
+                }
+                function progressBar3(progressVal, totalPercentageVal = 100) {
+                    var strokeVal = (4.64 * 100) / totalPercentageVal;
+                    var x = document.querySelector('.progress-circle-prog2');
+                    x.style.strokeDasharray = progressVal * (strokeVal) + ' 999';
+                    var el = document.querySelector('.progress-text2');
+                    var from = $('.progress-text2').data('progress2');
+                    $('.progress-text2').data('progress2', progressVal);
+                    var start = new Date().getTime();
+
+                    setTimeout(function () {
+                        var now = (new Date().getTime()) - start;
+                        var progress = now / 700;
+                        el.innerHTML = (progressVal / totalPercentageVal * 100).toFixed(2) + '%';
+
+                        if (progress < 1) setTimeout(arguments.callee, 10);
+                    }, 10);
+
+                }
+
+                progressBar(PendingTask, total);
+                progressBar1(completedtask, total);
+                progressBar3(Overduetask, total);
+
+                $('#TotalTask').text(total);
+
+                var ctx = document.getElementById('taskChart').getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: companies.map(company => company.companyname),
+                        datasets: [
+                            {
+                                label: 'Pending Task',
+                                data: companies.map(company => company.totalTaskPendingNotdue),
+                                backgroundColor: 'orange',
+                                borderColor: 'rgba(255, 206, 86, 1)',
+                                borderWidth: 1,
+                                datalabels: {
+                                    color: 'white'
+                                }
+                            },
+                            {
+                                label: 'Completed Task',
+                                data: companies.map(company => company.totalTaskCompleted),
+                                backgroundColor: 'green',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1,
+                                 
+                            },
+                            {
+                                label: 'Overdue Task',
+                                data: companies.map(company => company.totalTaskPendingOverdue),
+                                backgroundColor: 'red',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1,
+                                
+                            }
+                        ]
+                    },
+                    options: {
+                       
+                        scales: {
+                            x: {
+                                stacked: true // Grouped bar chart
+                            },
+                            y: {
+                                beginAtZero: true,
+                                 stacked: true 
+                            }
+                        },
+                             
+                            
+                        
+                    },
+
+                    plugins: [{
+                        id: 'datalabels',
+                        afterDraw: function (chart) {
+                            var ctx = chart.ctx;
+                            var chartHeight = chart.chartArea.bottom - chart.chartArea.top;
+                            chart.data.datasets.forEach(function (dataset, i) {
+                                var meta = chart.getDatasetMeta(i);
+                                meta.data.forEach(function (element, index) {
+                                  
+                                    var data = dataset.data[index];
+                                    console.log(data);
+                                    if (data > 0) {
+                                        debugger;
+                                        ctx.fillStyle = 'white';
+                                        ctx.textAlign = 'center';
+                                        ctx.textBaseline = 'bottom';
+                                        ctx.fillText(data, element.x, element.y + (data * chartHeight * 0.01));
+                                    }
+                                });
+                            });
+                        }
+                    }]
+                
+
+                });
+
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        
+
+        // Call typeMaster function when the document is ready
+     
+    });
+
+
+    // });
+    
+    // Function to open the popup
+  $(".Click-here").on('click', function() {
+  $(".custom-model-main").addClass('model-open');
+}); 
+$(".close-btn, .bg-overlay").click(function(){
+  $(".custom-model-main").removeClass('model-open');
+});
+    // var ctx = document.getElementById('myPieChart').getContext('2d');
+
+    // var chartData = @Html.Raw(Json.Serialize(Model));
+
+    // var myPieChart = new Chart(ctx, {
+    //     type: 'pie',
+    //     data: {
+    //         labels: Object.keys(chartData),
+    //         datasets: [{
+    //             label: 'Task',
+    //             data: Object.values(chartData),
+    //             backgroundColor: [
+    //                 'rgba(255, 99, 132, 0.7)',
+    //                 'rgba(54, 162, 235, 0.7)',
+    //                 'rgba(255, 206, 86, 0.7)',
+    //                 'rgba(200, 197, 98, 0.7)'
+    //             ]
+    //         }]
+    //     }
+
+       
+    // });
+
+
+
+
+    $('#Type').change(function () {
+        var type = $('#Type').val();
+        $.ajax({
+            url: '@Url.Action("GetRes", "Admin")',
+            type: 'GET',
+            data: { Type: type },
+            success: function (response) {
+                console.log(response);
+                var ctx = document.getElementById('myPieChart').getContext('2d');
+
+                var chartData = response.data;
+
+                var myPieChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: Object.keys(chartData),
+                        datasets: [{
+                            label: 'Task',
+                            data: Object.values(chartData),
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.7)',
+                                'rgba(54, 162, 235, 0.7)',
+                                'rgba(255, 206, 86, 0.7)',
+                                'rgba(200, 197, 98, 0.7)'
+                            ]
+                        }]
+                    }
+                });
+                var companies = response.lstlstTaskSummary;
+                console.log(companies);
+                var ctx = document.getElementById('taskChart').getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: companies.map(function (company) {
+                            return company.companyname
+                        }),
+                        datasets: [
+                            //     {
+                            //     label: 'Total Tasks',
+                            //     data: companies.map(function (company) { return company.totalTask }),
+                            //     backgroundColor: 'orange',
+                            //     borderColor: 'rgba(255, 99, 132, 1)',
+                            //     borderWidth: 1
+                            // },
+                            {
+                                label: 'Completed Task',
+                                data: companies.map(function (company) {
+                                    return company.totalTaskCompleted
+                                }),
+                                backgroundColor: 'green',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Overdue Task',
+                                data: companies.map(function (company) {
+                                    return company.totalTaskPendingOverdue
+                                }),
+                                backgroundColor: 'red',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Pending Task',
+                                data: companies.map(function (company) { return company.totalTaskPendingNotdue }),
+                                backgroundColor: 'orange',
+                                borderColor: 'rgba(255, 206, 86, 1)',
+                                borderWidth: 1
+                            }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                stacked: true // Grouped bar chart
+                            },
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    });
+
+</script>
+<script>
+  
+  
+
+</script>
+

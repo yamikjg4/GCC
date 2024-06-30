@@ -1,0 +1,70 @@
+﻿@model GlobalCalendar.MVC.DTO.OwnerWiseDetail
+@{
+    ViewData["Title"] = "ApproverReportDetail";
+    int srno = 0;
+}
+
+<div class="container">
+    <table class="table">
+        <caption>Task Summary</caption>
+        <thead style="background-color:gray;">
+            <tr>
+                <th>Approver Name</th>
+                <th>Total Task</th>
+                <th>Approved Task</th>
+                <th>Total tasks pending not due</th>
+                <th>Total tasks pending overdue</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@Model.Approver.EmployeeName</td>
+                <td>@Model.Approver.TotalTask</td>
+                <td>@Model.Approver.IsApprove</td>
+                <td>@Model.Approver.TotalTaskPendingNotDue</td>
+                <td>@Model.Approver.TotalTaskPendingOverDue</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="table-responsive">
+    <table class="table" id="example">
+        <thead>
+            <tr>
+                <th>Task No</th>
+                <th>Company Code/Company Name</th>
+                <th>Task Name</th>
+                <th>Task Description</th>
+                <th>Task Status(In progress/Not started/Completed/Approved/Task Returned)</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model.lstownerwiselst)
+            {
+                <tr>
+                   
+                    <td class="text-center">@item.TaskNumber</td>
+                    <td class="text-center">@item.Company</td>
+                    <td>@item.TaskName</td>
+                    <td>@item.TaskDescription</td>
+                    <td class="text-center">@item.TaskStatus</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    </div>
+</div>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+<!-- DataTables JavaScript -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            autoFill: true,
+            paging: true,
+            search: true,
+            //pageLength: 5
+        });
+    });
+</script>

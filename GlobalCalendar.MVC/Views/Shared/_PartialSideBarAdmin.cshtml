@@ -1,0 +1,111 @@
+﻿
+<div class="main-menu">
+    <header class="header">
+        <a href="@Url.Action("Index","Admin")" class="logo"><img src="~/images/Suzlon Logo-white.png" width="60%" /></a>
+        <button type="button" class="button-close fa fa-times js__menu_close"></button>
+        <style>
+            .ti-upload-excel::before {
+     
+                content: url('@Url.Content("~/Icon/UploadExcel.png")');
+               
+              
+            }.ti-closer::before {
+                content: url('@Url.Content("~/Icon/AddCloseCalendar.png")');              
+            }.ti-broadcaster::before {
+                content: url('@Url.Content("~/Icon/AddBroadcastingmessages.png")');
+            }
+
+            .ta-Apprvetask::before {
+                content: url('@Url.Content("~/Icon/ApproveTaskList.png")');
+            }
+
+
+        </style>
+
+
+    </header>
+    <!-- /.header -->
+    <div class="content">
+
+        <div class="navigation">
+            @*<h5 class="title">Navigation</h5>*@
+            <!-- /.title -->
+            <ul class="menu js__accordion">
+                <li id="dashboard" class="menu_active current">
+                    <a class="waves-effect" href="@Url.Action("Index","Admin")"><i class="menu-icon ti-dashboard"></i><span>Dashboard</span></a>
+                </li>
+
+              @*  <li id="create" class="menu_active">
+                    <a class="waves-effect" href="@Url.Action("CreateRequest","Home")"><i class="menu-icon ti-plus"></i><span>Create New Request</span></a>
+                </li>*@
+                <li class="menu_active">
+                    <a class="waves-effect" href="@Url.Action("UploadExcel", "Admin")">
+                        <i class="menu-icon ti-upload-excel"></i>
+                        <span>Upload Entity Checklist</span>
+                    </a>
+                </li>
+
+                <li class="menu_active">
+                    <a class="waves-effect" href="@Url.Action("AddClosingCalender","Admin")"><i class="menu-icon ti-closer"></i><span>Closure Date</span></a>
+                </li>
+                @*<li class="menu_active" >
+                    <a href="#" class="waves-effect" onclick="opentoggle()"><i class="menu-icon ti-plus" id="icon"></i><span> Reports</span></a>
+                    <ul class="menu js__accordion" id="sublist" style="display:none">
+                        <li class="menu_active" >
+                            <a href="@Url.Action("CompanyWise","AdminReport")" class="waves-effect" >    <i class="menu-icon ti-plus" id="faicon"></i><span>Task Status report for a period</span> </a>
+                        
+                        </li>
+                    </ul>
+                </li>*@
+                <li class="menu_active">
+                    <a class="waves-effect" href="@Url.Action("GetMatrixList","Admin")"><i class="menu-icon ta-Apprvetask"></i><span>Update Matrix</span></a>
+                </li>
+                <li class="menu_active">
+                    <a class="waves-effect" href="@Url.Action("Index","Page")" target="_blank"><i class="menu-icon ti-broadcaster"></i><span>Broadcasting Message</span></a>
+                </li>
+                <li id="logOut" class="menu-active">
+                    <a class="waves-effect" href="@Url.Action("LogOut","Login")"><i class="menu-icon fa fa-sign-out"></i><span>Log Out</span></a>
+                </li>
+                
+            </ul>
+
+        </div>
+        <!-- /.navigation -->
+    </div>
+    <!-- /.content -->
+</div>
+<!-- /.main-menu -->
+<script>
+    $(document).ready(function () {
+
+    });
+    function opentoggle(){
+        var sublist = document.getElementById("sublist");
+        var icon = document.getElementById("icon");
+        if (sublist.style.display === "none") {
+            icon.classList.remove("ti-plus");
+            icon.classList.add("ti-minus");
+            sublist.style.display = "block";
+        } else {
+            icon.classList.remove("ti-minus");
+            icon.classList.add("ti-plus");
+            sublist.style.display = "none";
+        }
+    }
+    function opensubmenu() {
+        var sublist = document.getElementById("sublistmenu");
+        var icon = document.getElementById("faicon");
+        if (sublist.style.display === "none") {
+            icon.classList.remove("ti-plus");
+            icon.classList.add("ti-minus");
+            sublist.style.display = "block";
+        } else {
+            icon.classList.remove("ti-minus");
+            icon.classList.add("ti-plus");
+            sublist.style.display = "none";
+        }
+    }
+</script>
+
+
+

@@ -1,0 +1,165 @@
+﻿@model IEnumerable<GlobalCalendar.MVC.DTO.ListApproveTask>
+
+@{
+    ViewData["Title"] = "ApprovedTaskList";
+    var srno = 0;
+}
+<style>
+    .odd {
+        background-color: #f9f9f9 !important; /* Change this color to your desired color */
+    }
+
+    /* Even row background color */
+    .even {
+        background-color: #ffffff !important; /* Change this color to your desired color */
+    }
+    .box {
+        height: 12px;
+        width: 12px;
+    }
+
+    .box--red {
+        background-color: red;
+    }
+
+    .box--yellow {
+        background-color: yellow;
+    }
+
+    .box--green {
+        background-color: green;
+    }
+
+    .dt-left{
+        text-align:left;
+    }
+</style>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+<!-- DataTables JavaScript -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<div><h3 style="text-align:center;" id="title">Approved Task List</h3></div>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-4">
+            <div class="col-xs-3 box box--red">
+              @*  <div class=""></div>*@
+            </div>
+            <div class="col-xs-9">
+            <div>Task Over Due Date Submited</div>
+            </div>
+            @*<p>Task Over Due Date Submited</p>*@
+        </div>
+        <div class="col-xs-4">
+            <div class="col-xs-3 box box--green">
+                @*  <div class=""></div>*@
+            </div>
+            <div class="col-xs-9">
+                Task Due Date Submited</div>
+        </div>
+        @*<div class="col-xs-4">
+            <div class="box box--yellow"></div>
+            <p>yellow box</p>
+        </div>*@
+    </div>
+</div>
+
+<table class="table" id="example">
+    <thead>
+        <tr>
+            <th>
+                SR. No.
+            </th>
+            <th>Company Code/Company Name</th>
+            <th>
+               Task Name
+            </th>
+            <th>
+               Task Description
+            </th>
+            <th>
+                Duedate Of Approval
+            </th>
+           @*  <th>
+                Approver Name
+            </th> *@
+            <th>
+                Approved Date
+            </th>
+           
+        </tr>
+    </thead>
+    <tbody class="text-center">
+       
+    </tbody>
+</table>
+
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: '@Url.Action("ApprovedTaskList", "Home")', // Update ControllerName to your actual controller name
+            type: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                // Check if data is not empty
+                if (response.data.length > 0) {
+                    response.data.forEach(function (item, index) {
+                        item.srno = index + 1;
+                    });
+
+                    // Initialize DataTable with retrieved data
+                    $('#example').DataTable({
+                        data: response.data,
+                        columns: [
+                            { data: 'srno' },
+                            { data: 'company' },
+                            { data: 'taskName', className: 'dt-left' },
+                            { data: 'taskDescription', className: 'dt-left' },
+                            {
+                                data: 'duedateforapproval',
+                                render: function (data, type, row) {
+                                    // Format the date as dd/MM/yyyy
+                                    if (type === 'display' || type === 'filter') {
+                                        var date = new Date(data);
+                                        var day = date.getDate().toString().padStart(2, '0');
+                                        var month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-based
+                                        var year = date.getFullYear();
+                                        return day + '-' + month + '-' + year;
+                                    }
+                                    return data; // For sorting and other purposes, return original data
+                                }
+                            },
+                            // { data: 'empName' },
+                            { data: 'submitTaskDate' }
+                        ],
+                        stripeClasses: ['odd', 'even'],
+                        ordering: false, // Disable ordering
+                        createdRow: function (row, data, dataIndex) {
+                            debugger;
+                            var parts = data.submitTaskDate.split('-');
+                            var day = parseInt(parts[0], 10);
+                            var month = parseInt(parts[1], 10) - 1; // Month is zero-based in JavaScript Date object
+                            var year = parseInt(parts[2], 10);
+                            var date = new Date(year, month, day);
+                       
+                            // Apply custom style to the row
+                            var bcolor = new Date(data.duedateforapproval) < date ? "Red" : "Green";
+                            $(row).attr('style', 'background-color: ' + bcolor + ' !important;');
+
+                            $(row).css('color', 'White');
+                            
+                        }
+                    });
+                } else {
+                    // Handle case when no data is returned
+                    console.log('No data found');
+                }
+            },
+            error: function (xhr, status, error) {
+                // Handle error
+                console.error('Error fetching data:', error);
+            }
+        });
+    });
+</script>
